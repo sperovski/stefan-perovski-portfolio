@@ -180,23 +180,13 @@ const darkTheme = {
   btnBg: "#140f24",
 };
 
-const lightTheme = {
-  bg: "#faf8ff",
-  bgHero: "linear-gradient(180deg, rgba(237,233,254,0.6) 0%, transparent 100%)",
-  text: "#1a1530",
-  textSecondary: "#5b5280",
-  accentLight: "#7c3aed",
-  accentDark: "#ede9fe",
-  cardBg: "#ffffff",
-  btnBg: "#f5f3ff",
-};
 
-const getThemeStyles = (isDark: boolean) => {
-  const theme = isDark ? darkTheme : lightTheme;
+const getThemeStyles = () => {
+  const theme = darkTheme;
   return {
     page: { background: theme.bg, minHeight: "100vh", color: theme.text, fontFamily: "DM Sans, sans-serif", fontSize: "15px", lineHeight: "1.7", transition: "background 0.3s ease, color 0.3s ease" },
     wrap: { maxWidth: "900px", margin: "0 auto", padding: "0 28px 100px" },
-    nav: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 28px", marginBottom: "52px", position: "sticky" as const, top: 0, zIndex: 100, background: isDark ? "rgba(8,6,15,0.88)" : "rgba(248,250,252,0.82)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${isDark ? "rgba(167,139,250,0.08)" : "rgba(124,58,237,0.1)"}`, marginLeft: "-28px", marginRight: "-28px", transition: "background 0.3s ease" },
+    nav: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 28px", marginBottom: "52px", position: "sticky" as const, top: 0, zIndex: 100, background: "rgba(8,6,15,0.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${"rgba(167,139,250,0.08)"}`, marginLeft: "-28px", marginRight: "-28px", transition: "background 0.3s ease" },
     navName: { fontFamily: "DM Serif Display, serif", fontSize: "16px", color: theme.text, letterSpacing: "0.01em" },
     navLinks: { display: "flex", gap: "24px", alignItems: "center" },
     navLink: { fontSize: "13px", color: theme.textSecondary, textDecoration: "none", letterSpacing: "0.04em", transition: "color 0.2s ease", cursor: "pointer" },
@@ -204,19 +194,19 @@ const getThemeStyles = (isDark: boolean) => {
     themeToggle: { background: theme.btnBg, border: `1px solid ${theme.accentDark}`, borderRadius: "8px", padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s ease", width: "36px", height: "36px" },
     themeToggleHover: { borderColor: theme.accentLight },
     themeToggleIcon: { width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" },
-    hero: { display: "flex", gap: "40px", alignItems: "center", marginBottom: "64px", animation: "fadeIn 0.8s ease-out", padding: "40px 36px", borderRadius: "20px", background: theme.bgHero, border: `1px solid ${isDark ? "rgba(30,16,64,0.5)" : "rgba(219,234,254,0.8)"}` },
-    avatarRing: { width: "156px", height: "156px", borderRadius: "50%", flexShrink: 0, padding: "2px", background: isDark ? "linear-gradient(135deg, #7c3aed 0%, #1e1040 100%)" : "linear-gradient(135deg, #c4b5fd 0%, #ede9fe 100%)" },
+    hero: { display: "flex", gap: "40px", alignItems: "center", marginBottom: "64px", animation: "fadeIn 0.8s ease-out", padding: "40px 36px", borderRadius: "20px", background: theme.bgHero, border: `1px solid ${"rgba(30,16,64,0.5)"}` },
+    avatarRing: { width: "156px", height: "156px", borderRadius: "50%", flexShrink: 0, padding: "2px", background: "linear-gradient(135deg, #7c3aed 0%, #1e1040 100%)" },
     avatar: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" as const, transition: "transform 0.3s ease" },
     avatarHover: { transform: "scale(1.04)" },
     h1: { fontFamily: "DM Serif Display, serif", fontSize: "38px", fontWeight: 400, marginBottom: "6px", lineHeight: "1.15", color: theme.text, letterSpacing: "-0.01em" },
     subtitle: { fontSize: "13px", color: theme.accentLight, marginBottom: "14px", letterSpacing: "0.01em" },
     bio: { color: theme.textSecondary, fontSize: "14px", maxWidth: "480px", marginBottom: "22px", lineHeight: "1.75", animation: "fadeIn 0.8s ease-out" },
     socialRow: { display: "flex", gap: "10px" },
-    socialBtn: { fontSize: "12px", padding: "7px 16px", border: `1px solid ${theme.accentDark}`, borderRadius: "8px", color: theme.textSecondary, textDecoration: "none", background: isDark ? "rgba(20,15,36,0.6)" : theme.btnBg, transition: "all 0.2s ease", cursor: "pointer", fontWeight: 500 },
+    socialBtn: { fontSize: "12px", padding: "7px 16px", border: `1px solid ${theme.accentDark}`, borderRadius: "8px", color: theme.textSecondary, textDecoration: "none", background: "rgba(20,15,36,0.6)", transition: "all 0.2s ease", cursor: "pointer", fontWeight: 500 },
     socialBtnHover: { borderColor: theme.accentLight, color: theme.accentLight },
-    sectionTitle: { fontFamily: "DM Serif Display, serif", fontSize: "24px", fontWeight: 400, color: theme.text, marginBottom: "28px", paddingBottom: "12px", borderBottom: `1px solid ${isDark ? "rgba(30,16,64,0.8)" : theme.accentDark}`, animation: "slideInLeft 0.7s ease-out", transition: "border-color 0.3s ease" },
+    sectionTitle: { fontFamily: "DM Serif Display, serif", fontSize: "24px", fontWeight: 400, color: theme.text, marginBottom: "28px", paddingBottom: "12px", borderBottom: `1px solid rgba(30,16,64,0.8)`, animation: "slideInLeft 0.7s ease-out", transition: "border-color 0.3s ease" },
     card: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "20px 22px", marginBottom: "14px", transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    cardHover: { borderColor: `${isDark ? "rgba(167,139,250,0.4)" : "#c4b5fd"}`, transform: "translateY(-2px)" },
+    cardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-2px)" },
     cardHeader: { display: "flex", alignItems: "center", gap: "14px", marginBottom: "10px" },
     logo: { width: "38px", height: "38px", borderRadius: "10px", background: theme.btnBg, border: `1px solid ${theme.accentDark}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 600, color: theme.accentLight, flexShrink: 0, overflow: "hidden" as const },
     cardTitle: { fontSize: "15px", fontWeight: 600, color: theme.text },
@@ -225,21 +215,21 @@ const getThemeStyles = (isDark: boolean) => {
     bullet: { fontSize: "13px", color: theme.textSecondary, marginBottom: "4px" },
     skillsGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "28px" },
     skillCard: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "24px 20px", textAlign: "center" as const, transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    skillCardHover: { borderColor: `${isDark ? "rgba(167,139,250,0.4)" : "#c4b5fd"}`, transform: "translateY(-3px)" },
+    skillCardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-3px)" },
     skillIcon: { width: "60px", height: "60px", margin: "0 auto 14px", position: "relative" as const },
     skillTitle: { fontSize: "14px", fontWeight: 500, color: theme.text, marginBottom: "8px" },
     skillDesc: { fontSize: "12px", color: theme.textSecondary, lineHeight: "1.55" },
     projGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" },
     projCard: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "20px", transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    projCardHover: { borderColor: `${isDark ? "rgba(167,139,250,0.4)" : "#c4b5fd"}`, transform: "translateY(-3px)" },
+    projCardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-3px)" },
     projTitleRow: { display: "flex", alignItems: "center", gap: "8px" },
     projTitle: { fontSize: "14px", fontWeight: 600, color: theme.text, marginBottom: "5px" },
     featuredBadge: { fontSize: "10px", padding: "2px 8px", borderRadius: "999px", border: `1px solid ${theme.accentLight}`, color: theme.accentLight, letterSpacing: "0.06em", textTransform: "uppercase" as const, transition: "all 0.2s ease" },
     featuredBadgeHover: { animation: "badgePulse 0.8s ease-in-out" },
     projDesc: { fontSize: "13px", color: theme.textSecondary, marginBottom: "12px", lineHeight: "1.6" },
     tagsRow: { display: "flex", flexWrap: "wrap" as const, gap: "5px", marginBottom: "12px" },
-    tag: { fontSize: "10px", padding: "3px 9px", background: `${isDark ? "rgba(139,92,246,0.1)" : "rgba(139,92,246,0.06)"}`, border: `1px solid ${isDark ? "rgba(139,92,246,0.3)" : "rgba(139,92,246,0.2)"}`, borderRadius: "6px", color: isDark ? "#c4b5fd" : "#7c3aed", transition: "all 0.2s ease", fontWeight: 500 },
-    tagHover: { background: `${isDark ? "rgba(124,58,237,0.15)" : "rgba(139,92,246,0.1)"}`, borderColor: `${isDark ? "rgba(167,139,250,0.5)" : "rgba(124,58,237,0.35)"}` },
+    tag: { fontSize: "10px", padding: "3px 9px", background: `${"rgba(139,92,246,0.1)"}`, border: `1px solid ${"rgba(139,92,246,0.3)"}`, borderRadius: "6px", color: "#c4b5fd", transition: "all 0.2s ease", fontWeight: 500 },
+    tagHover: { background: `${"rgba(124,58,237,0.15)"}`, borderColor: `${"rgba(167,139,250,0.5)"}` },
     linksRow: { display: "flex", gap: "8px" },
     linkBtn: { fontSize: "11px", color: theme.textSecondary, textDecoration: "none", padding: "5px 12px", border: `1px solid ${theme.accentDark}`, borderRadius: "8px", transition: "all 0.2s ease", fontWeight: 500 },
     linkBtnHover: { borderColor: theme.accentLight, color: theme.accentLight },
@@ -248,7 +238,7 @@ const getThemeStyles = (isDark: boolean) => {
     stackBadges: { display: "flex", flexWrap: "wrap" as const, gap: "7px" },
     badge: { fontSize: "12px", padding: "5px 13px", background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "8px", color: theme.text, transition: "border-color 0.2s ease, color 0.2s ease", fontWeight: 500 },
     badgeHover: { borderColor: theme.accentLight, color: theme.accentLight },
-    footer: { paddingTop: "48px", borderTop: `1px solid ${isDark ? "rgba(167,139,250,0.08)" : "rgba(0,0,0,0.08)"}`, transition: "border-color 0.3s ease" },
+    footer: { paddingTop: "48px", borderTop: `1px solid ${"rgba(167,139,250,0.08)"}`, transition: "border-color 0.3s ease" },
   };
 };
 
@@ -386,7 +376,7 @@ const OrbitingMoon = ({ src, name, index, total }: {
 };
 
 // Photo Card - Large left card
-const PhotoCard = ({ isDark: _isDark }: { isDark: boolean }) => (
+const PhotoCard = ({ }: { }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -459,7 +449,7 @@ const PhotoCard = ({ isDark: _isDark }: { isDark: boolean }) => (
 );
 
 // Expertise Card — editorial numbered list
-const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
+const ExpertiseCard = ({ }: { }) => {
   const skills = [
     { name: "Full-Stack Development", category: "Engineering" },
     { name: "REST API Design",        category: "Backend"     },
@@ -468,7 +458,7 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
     { name: "DevOps & CI/CD",         category: "Ops"         },
     { name: "Database Design",        category: "Data"        },
   ];
-  const cardBg = isDark ? "#0c0918" : "#f0f6ff";
+  const cardBg = "#0c0918";
 
   return (
     <motion.div
@@ -480,7 +470,7 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
         gridColumn: "2 / 4",
         gridRow: "1 / 2",
         borderRadius: "20px",
-        border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.07)"}`,
+        border: `1px solid ${"rgba(255,255,255,0.06)"}`,
         background: cardBg,
         position: "relative",
         overflow: "hidden",
@@ -498,7 +488,7 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
       {/* Header */}
       <p style={{
         fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em",
-        color: isDark ? "#4a3878" : "#94a3b8", textTransform: "uppercase",
+        color: "#4a3878", textTransform: "uppercase",
         marginBottom: "18px",
       }}>
         Core Skills
@@ -520,7 +510,7 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
               justifyContent: "space-between",
               padding: "10px 0",
               borderBottom: idx < skills.length - 1
-                ? `1px solid ${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)"}`
+                ? `1px solid ${"rgba(255,255,255,0.05)"}`
                 : "none",
               cursor: "default",
             }}
@@ -529,14 +519,14 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
             <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
               <span style={{
                 fontSize: "11px", fontWeight: 700, fontFamily: "DM Serif Display, serif",
-                color: isDark ? "rgba(167,139,250,0.35)" : "rgba(124,58,237,0.35)",
+                color: "rgba(167,139,250,0.35)",
                 letterSpacing: "0.04em", minWidth: "22px",
               }}>
                 {String(idx + 1).padStart(2, "0")}
               </span>
               <span style={{
                 fontSize: "15px", fontWeight: 600,
-                color: isDark ? "#c8d8f0" : "#1e293b",
+                color: "#c8d8f0",
                 letterSpacing: "-0.01em",
                 fontFamily: "DM Serif Display, serif",
               }}>
@@ -548,9 +538,9 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
             <span style={{
               fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: isDark ? "rgba(167,139,250,0.4)" : "rgba(124,58,237,0.5)",
+              color: "rgba(167,139,250,0.4)",
               padding: "3px 10px", borderRadius: "999px",
-              border: `1px solid ${isDark ? "rgba(167,139,250,0.12)" : "rgba(124,58,237,0.15)"}`,
+              border: `1px solid ${"rgba(167,139,250,0.12)"}`,
               whiteSpace: "nowrap",
             }}>
               {skill.category}
@@ -563,7 +553,7 @@ const ExpertiseCard = ({ isDark }: { isDark: boolean }) => {
 };
 
 // Location Card — full planet hero
-const LocationCard = ({ isDark: _isDark }: { isDark: boolean }) => (
+const LocationCard = ({ }: { }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -637,7 +627,7 @@ const LocationCard = ({ isDark: _isDark }: { isDark: boolean }) => (
 );
 
 // Contact CTA Card
-const ContactCard = ({ isDark: _isDark }: { isDark: boolean }) => {
+const ContactCard = ({ }: { }) => {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -735,7 +725,7 @@ const ContactCard = ({ isDark: _isDark }: { isDark: boolean }) => {
 };
 
 // Tech Stack Card — Saturn ring system
-const TechStackCard = ({ isDark: _isDark }: { isDark: boolean }) => {
+const TechStackCard = ({ }: { }) => {
   const techStack = [
     { name: "TypeScript",  src: "/Icons/ts.jpeg" },
     { name: "JavaScript",  src: "/Icons/js.webp" },
@@ -862,8 +852,8 @@ const TechStackCard = ({ isDark: _isDark }: { isDark: boolean }) => {
 };
 
 // Animated Section Title Component
-const AnimatedSectionTitle = ({ children, isDark, index }: { children: React.ReactNode; isDark: boolean; index?: string }) => {
-  const theme = isDark ? darkTheme : lightTheme;
+const AnimatedSectionTitle = ({ children, index }: { children: React.ReactNode; index?: string }) => {
+  const theme = darkTheme;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -876,7 +866,7 @@ const AnimatedSectionTitle = ({ children, isDark, index }: { children: React.Rea
         <span style={{
           display: "block",
           fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em",
-          color: isDark ? "rgba(167,139,250,0.5)" : "#94a3b8",
+          color: "rgba(167,139,250,0.5)",
           textTransform: "uppercase", marginBottom: "6px",
         }}>
           {index}
@@ -898,9 +888,7 @@ const AnimatedSectionTitle = ({ children, isDark, index }: { children: React.Rea
           viewport={{ once: true }}
           style={{
             flex: 1, height: "1px",
-            background: isDark
-              ? "linear-gradient(to right, rgba(167,139,250,0.5), transparent)"
-              : "linear-gradient(to right, rgba(139,92,246,0.4), transparent)",
+            background: "linear-gradient(to right, rgba(167,139,250,0.5), transparent)",
             transformOrigin: "left",
           }}
         />
@@ -917,13 +905,12 @@ const ExperienceCard = ({
   company,
   meta,
   bullets,
-  isDark,
   isLast,
 }: {
   id: string; logo: string; title: string; company: string;
-  meta: string; bullets: string[]; isDark: boolean; isLast?: boolean;
+  meta: string; bullets: string[]; isLast?: boolean;
 }) => {
-  const theme = isDark ? darkTheme : lightTheme;
+  const theme = darkTheme;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -938,13 +925,13 @@ const ExperienceCard = ({
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "20px" }}>
         <div style={{
           width: "12px", height: "12px", borderRadius: "50%", flexShrink: 0, marginTop: "4px",
-          background: isDark ? "#7c3aed" : "#a78bfa",
-          boxShadow: isDark ? "0 0 0 3px rgba(139,92,246,0.2), 0 0 12px rgba(139,92,246,0.4)" : "0 0 0 3px rgba(167,139,250,0.2)",
+          background: "#7c3aed",
+          boxShadow: "0 0 0 3px rgba(139,92,246,0.2), 0 0 12px rgba(139,92,246,0.4)",
         }} />
         {!isLast && (
           <div style={{
             flex: 1, width: "1px", marginTop: "6px",
-            background: isDark ? "linear-gradient(to bottom, rgba(124,58,237,0.35), transparent)" : "linear-gradient(to bottom, rgba(139,92,246,0.2), transparent)",
+            background: "linear-gradient(to bottom, rgba(124,58,237,0.35), transparent)",
           }} />
         )}
       </div>
@@ -956,9 +943,9 @@ const ExperienceCard = ({
         onClick={() => bullets.length > 0 && setOpen(!open)}
         style={{
           flex: 1,
-          background: isDark ? "rgba(10,18,40,0.7)" : "rgba(255,255,255,0.85)",
+          background: "rgba(10,18,40,0.7)",
           backdropFilter: "blur(12px)",
-          border: `1px solid ${isDark ? "rgba(167,139,250,0.1)" : "rgba(124,58,237,0.12)"}`,
+          border: `1px solid ${"rgba(167,139,250,0.1)"}`,
           borderRadius: "16px",
           padding: "20px 24px",
           cursor: bullets.length > 1 ? "pointer" : "default",
@@ -968,9 +955,9 @@ const ExperienceCard = ({
         {/* Date chip */}
         <span style={{
           display: "inline-block", fontSize: "10px", fontWeight: 600,
-          letterSpacing: "0.08em", color: isDark ? "rgba(167,139,250,0.7)" : "#6b6590",
-          background: isDark ? "rgba(139,92,246,0.1)" : "rgba(124,58,237,0.06)",
-          border: `1px solid ${isDark ? "rgba(167,139,250,0.15)" : "rgba(124,58,237,0.15)"}`,
+          letterSpacing: "0.08em", color: "rgba(167,139,250,0.7)",
+          background: "rgba(139,92,246,0.1)",
+          border: `1px solid ${"rgba(167,139,250,0.15)"}`,
           borderRadius: "999px", padding: "3px 10px", marginBottom: "10px",
         }}>
           {meta}
@@ -988,14 +975,14 @@ const ExperienceCard = ({
           <div>
             {(open ? bullets : bullets.slice(0, 1)).map((b, i) => (
               <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "6px" }}>
-                <span style={{ color: isDark ? "rgba(167,139,250,0.5)" : "#94a3b8", marginTop: "2px", fontSize: "12px", flexShrink: 0 }}>→</span>
+                <span style={{ color: "rgba(167,139,250,0.5)", marginTop: "2px", fontSize: "12px", flexShrink: 0 }}>→</span>
                 <span style={{ fontSize: "13px", color: theme.textSecondary, lineHeight: "1.65" }}>{b}</span>
               </div>
             ))}
             {bullets.length > 1 && (
               <button onClick={(e) => { e.stopPropagation(); setOpen(!open); }} style={{
                 marginTop: "6px", fontSize: "11px", fontWeight: 600,
-                color: isDark ? "rgba(167,139,250,0.7)" : "#a78bfa",
+                color: "rgba(167,139,250,0.7)",
                 background: "none", border: "none", cursor: "pointer", padding: 0,
                 letterSpacing: "0.04em",
               }}>
@@ -1018,12 +1005,11 @@ const ProjectCard = ({
   featured,
   logo,
   links,
-  isDark,
 }: {
   id: string; title: string; description: string; tags: string[];
-  featured?: boolean; logo?: string; links: { label: string; href: string }[]; isDark: boolean;
+  featured?: boolean; logo?: string; links: { label: string; href: string }[];
 }) => {
-  const theme = isDark ? darkTheme : lightTheme;
+  const theme = darkTheme;
   const [rotateX, setRotateX] = React.useState(0);
   const [rotateY, setRotateY] = React.useState(0);
   const [isHovered, setIsHovered] = React.useState(false);
@@ -1046,10 +1032,10 @@ const ProjectCard = ({
       onMouseLeave={() => { setRotateX(0); setRotateY(0); setIsHovered(false); }}
       onMouseEnter={() => setIsHovered(true)}
       style={{
-        background: isDark ? "rgba(10,18,40,0.8)" : "rgba(255,255,255,0.9)",
+        background: "rgba(10,18,40,0.8)",
         border: `1px solid ${isHovered
-          ? (isDark ? "rgba(167,139,250,0.35)" : "rgba(139,92,246,0.5)")
-          : (isDark ? "rgba(167,139,250,0.1)" : "rgba(124,58,237,0.12)")}`,
+          ? ("rgba(167,139,250,0.35)")
+          : ("rgba(167,139,250,0.1)")}`,
         borderRadius: "18px",
         padding: "24px",
         transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(${isHovered ? "-3px" : "0"})`,
@@ -1057,7 +1043,7 @@ const ProjectCard = ({
         position: "relative",
         overflow: "hidden",
         boxShadow: isHovered
-          ? (isDark ? "0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(167,139,250,0.1)" : "0 12px 40px rgba(0,0,0,0.1)")
+          ? ("0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(167,139,250,0.1)")
           : "none",
       }}
     >
@@ -1103,7 +1089,7 @@ const ProjectCard = ({
             padding: "3px 9px", borderRadius: "999px",
             background: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(168,85,247,0.15))",
             border: "1px solid rgba(167,139,250,0.3)",
-            color: isDark ? "#c4b5fd" : "#7c3aed",
+            color: "#c4b5fd",
             whiteSpace: "nowrap", marginLeft: "10px", flexShrink: 0,
           }}>
             Featured
@@ -1119,9 +1105,9 @@ const ProjectCard = ({
         {tags.map((tag) => (
           <span key={tag} style={{
             fontSize: "10px", fontWeight: 600, padding: "4px 10px",
-            background: isDark ? "rgba(167,139,250,0.08)" : "rgba(124,58,237,0.06)",
-            border: `1px solid ${isDark ? "rgba(167,139,250,0.18)" : "rgba(139,92,246,0.2)"}`,
-            borderRadius: "999px", color: isDark ? "#c4b5fd" : "#7c3aed",
+            background: "rgba(167,139,250,0.08)",
+            border: `1px solid ${"rgba(167,139,250,0.18)"}`,
+            borderRadius: "999px", color: "#c4b5fd",
             letterSpacing: "0.02em",
           }}>
             {tag}
@@ -1134,11 +1120,11 @@ const ProjectCard = ({
           <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
             style={{
               display: "inline-flex", alignItems: "center", gap: "5px",
-              fontSize: "12px", fontWeight: 600, color: isDark ? "#c4b5fd" : "#7c3aed",
+              fontSize: "12px", fontWeight: 600, color: "#c4b5fd",
               textDecoration: "none", padding: "6px 14px",
-              border: `1px solid ${isDark ? "rgba(167,139,250,0.2)" : "rgba(139,92,246,0.3)"}`,
+              border: `1px solid ${"rgba(167,139,250,0.2)"}`,
               borderRadius: "8px",
-              background: isDark ? "rgba(124,58,237,0.06)" : "rgba(124,58,237,0.04)",
+              background: "rgba(124,58,237,0.06)",
               transition: "all 0.2s ease",
             }}
           >
@@ -1156,14 +1142,12 @@ const SkillCard = ({
   title,
   description,
   icon,
-  isDark,
 }: {
   title: string;
   description: string;
   icon: string;
-  isDark: boolean;
 }) => {
-  const theme = isDark ? darkTheme : lightTheme;
+  const theme = darkTheme;
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
@@ -1175,7 +1159,7 @@ const SkillCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        background: `${isDark ? "rgba(17, 32, 64, 0.5)" : "rgba(248, 250, 252, 0.5)"}`,
+        background: `${"rgba(17, 32, 64, 0.5)"}`,
         backdropFilter: "blur(8px)",
         border: `0.5px solid ${theme.accentDark}`,
         borderRadius: "12px",
@@ -1194,7 +1178,7 @@ const SkillCard = ({
           height: "60px",
           margin: "0 auto 14px",
           position: "relative",
-          filter: isDark ? "brightness(0) invert(1)" : "none",
+          filter: "brightness(0) invert(1)",
         }}
       >
         <Image src={`/Icons/${icon}`} alt={title} width={60} height={60} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
@@ -1314,17 +1298,10 @@ const VideoHeroSection = () => {
 };
 
 export default function Home() {
-  const [isDark, setIsDark] = React.useState(true);
-  const [hoveredBtn, setHoveredBtn] = React.useState<string | null>(null);
 
-  const S = getThemeStyles(isDark);
+  const S = getThemeStyles();
   const softSkills = getSoftSkills();
 
-  React.useEffect(() => {
-    // Check system preference on load
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDark(prefersDark);
-  }, []);
 
   const experienceData = [
     {
@@ -1412,36 +1389,7 @@ export default function Home() {
               <a href="#experience" style={S.navLink}>Experience</a>
               <a href="#education" style={S.navLink}>Education</a>
               <a href="#projects" style={S.navLink}>Projects</a>
-              <button
-                style={{...S.themeToggle, ...(hoveredBtn === 'theme' ? S.themeToggleHover : {})}}
-                onClick={() => setIsDark(!isDark)}
-                onMouseEnter={() => setHoveredBtn('theme')}
-                onMouseLeave={() => setHoveredBtn(null)}
-              >
-                <svg
-                  style={{...S.themeToggleIcon, animation: "themeToggle 0.6s ease-in-out"}}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={isDark ? "white" : "black"}
-                  strokeWidth="2"
-                >
-                  {isDark ? (
-                    <>
-                      <circle cx="12" cy="12" r="5" />
-                      <line x1="12" y1="1" x2="12" y2="3" />
-                      <line x1="12" y1="21" x2="12" y2="23" />
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                      <line x1="1" y1="12" x2="3" y2="12" />
-                      <line x1="21" y1="12" x2="23" y2="12" />
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                    </>
-                  ) : (
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                  )}
-                </svg>
-              </button>
+
             </div>
           </nav>
 
@@ -1456,17 +1404,17 @@ export default function Home() {
                 gap: "14px",
               }}
             >
-              <PhotoCard isDark={isDark} />
-              <ExpertiseCard isDark={isDark} />
-              <LocationCard isDark={isDark} />
-              <ContactCard isDark={isDark} />
-              <TechStackCard isDark={isDark} />
+              <PhotoCard />
+              <ExpertiseCard />
+              <LocationCard />
+              <ContactCard />
+              <TechStackCard />
             </div>
           </section>
 
           {/* EXPERIENCE */}
           <section id="experience" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle isDark={isDark} index="01 — Experience">Experience</AnimatedSectionTitle>
+            <AnimatedSectionTitle index="01 — Experience">Experience</AnimatedSectionTitle>
             <div>
               {experienceData.map((exp, idx) => (
                 <ExperienceCard
@@ -1477,7 +1425,7 @@ export default function Home() {
                   company={exp.company}
                   meta={exp.meta}
                   bullets={exp.bullets}
-                  isDark={isDark}
+                 
                   isLast={idx === experienceData.length - 1}
                 />
               ))}
@@ -1486,10 +1434,10 @@ export default function Home() {
 
           {/* EDUCATION */}
           <section id="education" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle isDark={isDark} index="02 — Education">Education</AnimatedSectionTitle>
+            <AnimatedSectionTitle index="02 — Education">Education</AnimatedSectionTitle>
             <div style={{
-              background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
-              border: `1px solid ${isDark ? "rgba(167,139,250,0.1)" : "rgba(0,0,0,0.07)"}`,
+              background: "rgba(255,255,255,0.03)",
+              border: `1px solid ${"rgba(167,139,250,0.1)"}`,
               borderRadius: "20px",
               padding: "32px",
               display: "flex",
@@ -1500,7 +1448,7 @@ export default function Home() {
               <div style={{
                 width: "56px", height: "56px", borderRadius: "14px", flexShrink: 0,
                 background: "#fff",
-                border: `1px solid ${isDark ? "rgba(167,139,250,0.15)" : "rgba(124,58,237,0.12)"}`,
+                border: `1px solid ${"rgba(167,139,250,0.15)"}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 overflow: "hidden",
                 padding: "6px",
@@ -1512,27 +1460,27 @@ export default function Home() {
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", flexWrap: "wrap", marginBottom: "6px" }}>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: "17px", color: isDark ? "#e2e8f0" : "#1e293b", marginBottom: "3px" }}>
+                    <p style={{ fontWeight: 600, fontSize: "17px", color: "#e2e8f0", marginBottom: "3px" }}>
                       Faculty of Computer Science and Engineering
                     </p>
-                    <p style={{ fontSize: "14px", color: isDark ? "#94a3b8" : "#6b6590" }}>
+                    <p style={{ fontSize: "14px", color: "#94a3b8" }}>
                       Software Engineering · Ss. Cyril and Methodius University, Skopje
                     </p>
                   </div>
                   <span style={{
                     fontSize: "12px", fontWeight: 500, padding: "4px 12px", borderRadius: "999px", whiteSpace: "nowrap",
-                    background: isDark ? "rgba(167,139,250,0.1)" : "rgba(139,92,246,0.1)",
-                    color: isDark ? "#a78bfa" : "#7c3aed",
-                    border: `1px solid ${isDark ? "rgba(167,139,250,0.2)" : "rgba(124,58,237,0.15)"}`,
+                    background: "rgba(167,139,250,0.1)",
+                    color: "#a78bfa",
+                    border: `1px solid ${"rgba(167,139,250,0.2)"}`,
                   }}>Sep 2023 – Present</span>
                 </div>
                 <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {["JavaScript", "TypeScript", "Python", "Java", "React", "Spring Boot", "PostgreSQL", "Docker"].map((skill) => (
                     <span key={skill} style={{
                       fontSize: "12px", padding: "4px 12px", borderRadius: "999px",
-                      background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                      color: isDark ? "#94a3b8" : "#6b6590",
-                      border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)"}`,
+                      background: "rgba(255,255,255,0.05)",
+                      color: "#94a3b8",
+                      border: `1px solid ${"rgba(255,255,255,0.08)"}`,
                     }}>{skill}</span>
                   ))}
                 </div>
@@ -1542,7 +1490,7 @@ export default function Home() {
 
           {/* PROJECTS */}
           <section id="projects" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle isDark={isDark} index="03 — Projects">Projects</AnimatedSectionTitle>
+            <AnimatedSectionTitle index="03 — Projects">Projects</AnimatedSectionTitle>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
               {projectsData.map((proj) => (
                 <ProjectCard
@@ -1554,7 +1502,7 @@ export default function Home() {
                   featured={proj.featured}
                   logo={proj.logo}
                   links={proj.links}
-                  isDark={isDark}
+                 
                 />
               ))}
             </div>
@@ -1562,7 +1510,7 @@ export default function Home() {
 
           {/* SOFT SKILLS */}
           <section id="skills" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle isDark={isDark} index="04 — Soft Skills">Soft Skills</AnimatedSectionTitle>
+            <AnimatedSectionTitle index="04 — Soft Skills">Soft Skills</AnimatedSectionTitle>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px" }}>
               {softSkills.map((skill) => (
                 <SkillCard
@@ -1570,7 +1518,7 @@ export default function Home() {
                   title={skill.title}
                   description={skill.desc}
                   icon={skill.icon}
-                  isDark={isDark}
+                 
                 />
               ))}
             </div>
@@ -1580,8 +1528,8 @@ export default function Home() {
           <footer style={S.footer}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px", marginBottom: "32px" }}>
               <div>
-                <p style={{ fontFamily: "DM Serif Display, serif", fontSize: "20px", color: isDark ? "#e2e8f0" : "#1e293b", marginBottom: "6px" }}>Stefan Perovski</p>
-                <p style={{ fontSize: "13px", color: isDark ? "#475569" : "#94a3b8" }}>Software Engineering Student · FINKI, Skopje</p>
+                <p style={{ fontFamily: "DM Serif Display, serif", fontSize: "20px", color: "#e2e8f0", marginBottom: "6px" }}>Stefan Perovski</p>
+                <p style={{ fontSize: "13px", color: "#475569" }}>Software Engineering Student · FINKI, Skopje</p>
               </div>
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 {[
@@ -1591,11 +1539,11 @@ export default function Home() {
                 ].map((link) => (
                   <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" style={{
                     fontSize: "12px", fontWeight: 600,
-                    color: isDark ? "#475569" : "#94a3b8",
+                    color: "#475569",
                     textDecoration: "none", padding: "7px 16px",
-                    border: `1px solid ${isDark ? "rgba(167,139,250,0.1)" : "rgba(0,0,0,0.08)"}`,
+                    border: `1px solid ${"rgba(167,139,250,0.1)"}`,
                     borderRadius: "999px",
-                    background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
+                    background: "rgba(255,255,255,0.03)",
                     transition: "all 0.2s ease",
                   }}>
                     {link.label}
@@ -1603,7 +1551,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <p style={{ fontSize: "11px", color: isDark ? "#2d1f4a" : "#cbd5e1", letterSpacing: "0.04em" }}>
+            <p style={{ fontSize: "11px", color: "#2d1f4a", letterSpacing: "0.04em" }}>
               © 2026 Stefan Perovski · Built with Next.js & Framer Motion
             </p>
           </footer>
