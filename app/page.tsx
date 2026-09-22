@@ -1,1563 +1,642 @@
-"use client";
-
 import Image from "next/image";
-import React from "react";
-import { motion, useAnimationFrame, useScroll, useTransform } from "framer-motion";
+import { education, experience, featured, habits, languages, links, projects, toolbox, type Project } from "./data";
+import { ContactForm, CopyEmail, RevealObserver, Tilt } from "./interactive";
 
-const keyframes = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes typing {
-    from {
-      width: 0;
-      opacity: 0;
-    }
-    to {
-      width: 100%;
-      opacity: 1;
-    }
-  }
-
-  @keyframes blink {
-    0%, 49% {
-      border-right: 2px solid #a78bfa;
-    }
-    50%, 100% {
-      border-right: 2px solid transparent;
-    }
-  }
-
-  @keyframes glow {
-    0%, 100% {
-      border-color: #1e1040;
-    }
-    50% {
-      border-color: #a78bfa;
-    }
-  }
-
-  @keyframes themeToggle {
-    from {
-      transform: rotate(0deg) scale(1);
-      opacity: 1;
-    }
-    to {
-      transform: rotate(360deg) scale(1);
-      opacity: 1;
-    }
-  }
-
-  @keyframes badgePulse {
-    0% {
-      box-shadow: 0 0 0 rgba(167, 139, 250, 0);
-      transform: translateY(0);
-    }
-    50% {
-      box-shadow: 0 0 12px rgba(167, 139, 250, 0.35);
-      transform: translateY(-1px);
-    }
-    100% {
-      box-shadow: 0 0 0 rgba(167, 139, 250, 0);
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes underlineReveal {
-    from {
-      scaleX(0);
-      transformOrigin: left;
-    }
-    to {
-      scaleX(1);
-      transformOrigin: left;
-    }
-  }
-
-  @keyframes waveSlide {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes glowPulse {
-    0%, 100% {
-      box-shadow: 0 0 0 rgba(167, 139, 250, 0), inset 0 0 0 1px rgba(167, 139, 250, 0.2);
-    }
-    50% {
-      box-shadow: 0 0 20px rgba(167, 139, 250, 0.4), inset 0 0 0 1px rgba(167,139,250,0.5);
-    }
-  }
-
-  @keyframes featurePulse {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(167, 139, 250, 0);
-    }
-  }
-
-  @keyframes globeRotate {
-    from {
-      transform: rotateZ(0deg);
-    }
-    to {
-      transform: rotateZ(360deg);
-    }
-  }
-
-  @keyframes floatUp {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
-
-  @keyframes pulseGlow {
-    0%, 100% {
-      box-shadow: 0 0 20px rgba(167, 139, 250, 0.2);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(167, 139, 250, 0.4);
-    }
-  }
-
-  @keyframes atmospherePulse {
-    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-    50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.06); }
-  }
-
-  @keyframes ringShimmer {
-    0%   { opacity: 0.25; }
-    50%  { opacity: 0.55; }
-    100% { opacity: 0.25; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-`;
-
-const darkTheme = {
-  bg: "#08060f",
-  bgHero: "linear-gradient(180deg, rgba(30,16,64,0.5) 0%, transparent 100%)",
-  text: "#ede9fe",
-  textSecondary: "#7c6fa0",
-  accentLight: "#a78bfa",
-  accentDark: "#1e1040",
-  cardBg: "#0f0c1e",
-  btnBg: "#140f24",
-};
-
-
-const getThemeStyles = () => {
-  const theme = darkTheme;
-  return {
-    page: { background: theme.bg, minHeight: "100vh", color: theme.text, fontFamily: "DM Sans, sans-serif", fontSize: "15px", lineHeight: "1.7", transition: "background 0.3s ease, color 0.3s ease" },
-    wrap: { maxWidth: "900px", margin: "0 auto", padding: "0 28px 100px" },
-    nav: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 28px", marginBottom: "52px", position: "sticky" as const, top: 0, zIndex: 100, background: "rgba(8,6,15,0.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${"rgba(167,139,250,0.08)"}`, marginLeft: "-28px", marginRight: "-28px", transition: "background 0.3s ease" },
-    navName: { fontFamily: "DM Serif Display, serif", fontSize: "16px", color: theme.text, letterSpacing: "0.01em" },
-    navLinks: { display: "flex", gap: "24px", alignItems: "center" },
-    navLink: { fontSize: "13px", color: theme.textSecondary, textDecoration: "none", letterSpacing: "0.04em", transition: "color 0.2s ease", cursor: "pointer" },
-    navLinkHover: { color: theme.accentLight },
-    themeToggle: { background: theme.btnBg, border: `1px solid ${theme.accentDark}`, borderRadius: "8px", padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s ease", width: "36px", height: "36px" },
-    themeToggleHover: { borderColor: theme.accentLight },
-    themeToggleIcon: { width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" },
-    hero: { display: "flex", gap: "40px", alignItems: "center", marginBottom: "64px", animation: "fadeIn 0.8s ease-out", padding: "40px 36px", borderRadius: "20px", background: theme.bgHero, border: `1px solid ${"rgba(30,16,64,0.5)"}` },
-    avatarRing: { width: "156px", height: "156px", borderRadius: "50%", flexShrink: 0, padding: "2px", background: "linear-gradient(135deg, #7c3aed 0%, #1e1040 100%)" },
-    avatar: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" as const, transition: "transform 0.3s ease" },
-    avatarHover: { transform: "scale(1.04)" },
-    h1: { fontFamily: "DM Serif Display, serif", fontSize: "38px", fontWeight: 400, marginBottom: "6px", lineHeight: "1.15", color: theme.text, letterSpacing: "-0.01em" },
-    subtitle: { fontSize: "13px", color: theme.accentLight, marginBottom: "14px", letterSpacing: "0.01em" },
-    bio: { color: theme.textSecondary, fontSize: "14px", maxWidth: "480px", marginBottom: "22px", lineHeight: "1.75", animation: "fadeIn 0.8s ease-out" },
-    socialRow: { display: "flex", gap: "10px" },
-    socialBtn: { fontSize: "12px", padding: "7px 16px", border: `1px solid ${theme.accentDark}`, borderRadius: "8px", color: theme.textSecondary, textDecoration: "none", background: "rgba(20,15,36,0.6)", transition: "all 0.2s ease", cursor: "pointer", fontWeight: 500 },
-    socialBtnHover: { borderColor: theme.accentLight, color: theme.accentLight },
-    sectionTitle: { fontFamily: "DM Serif Display, serif", fontSize: "24px", fontWeight: 400, color: theme.text, marginBottom: "28px", paddingBottom: "12px", borderBottom: `1px solid rgba(30,16,64,0.8)`, animation: "slideInLeft 0.7s ease-out", transition: "border-color 0.3s ease" },
-    card: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "20px 22px", marginBottom: "14px", transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    cardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-2px)" },
-    cardHeader: { display: "flex", alignItems: "center", gap: "14px", marginBottom: "10px" },
-    logo: { width: "38px", height: "38px", borderRadius: "10px", background: theme.btnBg, border: `1px solid ${theme.accentDark}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 600, color: theme.accentLight, flexShrink: 0, overflow: "hidden" as const },
-    cardTitle: { fontSize: "15px", fontWeight: 600, color: theme.text },
-    cardCompany: { fontSize: "13px", color: theme.accentLight },
-    cardMeta: { fontSize: "12px", color: theme.textSecondary, marginBottom: "10px" },
-    bullet: { fontSize: "13px", color: theme.textSecondary, marginBottom: "4px" },
-    skillsGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "28px" },
-    skillCard: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "24px 20px", textAlign: "center" as const, transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    skillCardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-3px)" },
-    skillIcon: { width: "60px", height: "60px", margin: "0 auto 14px", position: "relative" as const },
-    skillTitle: { fontSize: "14px", fontWeight: 500, color: theme.text, marginBottom: "8px" },
-    skillDesc: { fontSize: "12px", color: theme.textSecondary, lineHeight: "1.55" },
-    projGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" },
-    projCard: { background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "14px", padding: "20px", transition: "border-color 0.2s ease, transform 0.2s ease", animation: "fadeIn 0.6s ease-out" },
-    projCardHover: { borderColor: `${"rgba(167,139,250,0.4)"}`, transform: "translateY(-3px)" },
-    projTitleRow: { display: "flex", alignItems: "center", gap: "8px" },
-    projTitle: { fontSize: "14px", fontWeight: 600, color: theme.text, marginBottom: "5px" },
-    featuredBadge: { fontSize: "10px", padding: "2px 8px", borderRadius: "999px", border: `1px solid ${theme.accentLight}`, color: theme.accentLight, letterSpacing: "0.06em", textTransform: "uppercase" as const, transition: "all 0.2s ease" },
-    featuredBadgeHover: { animation: "badgePulse 0.8s ease-in-out" },
-    projDesc: { fontSize: "13px", color: theme.textSecondary, marginBottom: "12px", lineHeight: "1.6" },
-    tagsRow: { display: "flex", flexWrap: "wrap" as const, gap: "5px", marginBottom: "12px" },
-    tag: { fontSize: "10px", padding: "3px 9px", background: `${"rgba(139,92,246,0.1)"}`, border: `1px solid ${"rgba(139,92,246,0.3)"}`, borderRadius: "6px", color: "#c4b5fd", transition: "all 0.2s ease", fontWeight: 500 },
-    tagHover: { background: `${"rgba(124,58,237,0.15)"}`, borderColor: `${"rgba(167,139,250,0.5)"}` },
-    linksRow: { display: "flex", gap: "8px" },
-    linkBtn: { fontSize: "11px", color: theme.textSecondary, textDecoration: "none", padding: "5px 12px", border: `1px solid ${theme.accentDark}`, borderRadius: "8px", transition: "all 0.2s ease", fontWeight: 500 },
-    linkBtnHover: { borderColor: theme.accentLight, color: theme.accentLight },
-    stackGroup: { marginBottom: "20px", animation: "fadeIn 0.6s ease-out" },
-    stackLabel: { fontSize: "11px", color: theme.textSecondary, letterSpacing: "0.08em", textTransform: "uppercase" as const, marginBottom: "10px", fontWeight: 600 },
-    stackBadges: { display: "flex", flexWrap: "wrap" as const, gap: "7px" },
-    badge: { fontSize: "12px", padding: "5px 13px", background: theme.cardBg, border: `1px solid ${theme.accentDark}`, borderRadius: "8px", color: theme.text, transition: "border-color 0.2s ease, color 0.2s ease", fontWeight: 500 },
-    badgeHover: { borderColor: theme.accentLight, color: theme.accentLight },
-    footer: { paddingTop: "48px", borderTop: `1px solid ${"rgba(167,139,250,0.08)"}`, transition: "border-color 0.3s ease" },
-  };
-};
-
-const getSoftSkills = () => [
-  { title: "Teamwork", desc: "Building together toward shared goals, across technical and non-technical teams.", icon: "team_9942529.png" },
-  { title: "Motivation", desc: "Self-driven to keep learning and building, even outside the classroom.", icon: "self-motivation_17379187.png" },
-  { title: "Adaptability", desc: "Comfortable switching between coding, leadership, and public-facing roles.", icon: "adaptation_18224723.png" },
-  { title: "Public Relations", desc: "Representing organizations clearly and professionally to diverse audiences.", icon: "public-relation_17495092.png" },
-  { title: "Strategic Thinking", desc: "Connecting day-to-day work to long-term impact and bigger picture goals.", icon: "game_14544309.png" },
-  { title: "Cognitive Flexibility", desc: "Shifting fluidly between deep technical focus and high-level people work.", icon: "flexibility_18514241.png" },
+const nav = [
+  { href: "#work", label: "Work" },
+  { href: "#experience", label: "Experience" },
+  { href: "#about", label: "About" },
 ];
 
-// ============ ABOUT SECTION COMPONENTS ============
-
-// Full dot-matrix planet for Location card
-const Planet = ({ size = 190 }: { size?: number }) => {
-  const cx = size / 2;
-  const cy = size / 2;
-  const planetR = size * 0.4;
-  const latSteps = 20;
-  const lonSteps = 32;
-
-  const dots: Array<{ px: number; py: number; depth: number; land: boolean }> = [];
-
-  // Rough continent masks [lat-norm 0-1, lon-norm 0-1, spread]
-  const continents = [
-    [0.55, 0.52, 0.16], [0.45, 0.42, 0.13], // Europe/Africa
-    [0.52, 0.18, 0.18], [0.65, 0.22, 0.13], // Americas
-    [0.58, 0.72, 0.20], [0.50, 0.82, 0.14], // Asia
-    [0.30, 0.78, 0.10],                      // Australia
-  ];
-
-  for (let la = 0; la <= latSteps; la++) {
-    const phi = (Math.PI * la) / latSteps - Math.PI / 2;
-    const latN = la / latSteps;
-    for (let lo = 0; lo < lonSteps; lo++) {
-      const theta = (2 * Math.PI * lo) / lonSteps;
-      const lonN = lo / lonSteps;
-      const x = Math.cos(phi) * Math.cos(theta);
-      const y = Math.cos(phi) * Math.sin(theta);
-      const z = Math.sin(phi);
-      const land = continents.some(([cla, clo, sp]) =>
-        Math.hypot(latN - cla, lonN - clo) < (sp as number)
-      );
-      dots.push({ px: cx + x * planetR, py: cy - z * planetR, depth: y, land });
-    }
-  }
-  dots.sort((a, b) => a.depth - b.depth);
-
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <defs>
-        <radialGradient id="planetBase" cx="38%" cy="32%" r="62%">
-          <stop offset="0%"   stopColor="#2563eb" />
-          <stop offset="50%"  stopColor="#0f2560" />
-          <stop offset="100%" stopColor="#020b1f" />
-        </radialGradient>
-        <radialGradient id="planetAtmo" cx="50%" cy="50%" r="50%">
-          <stop offset="74%" stopColor="transparent" />
-          <stop offset="88%" stopColor="rgba(96,165,250,0.28)" />
-          <stop offset="100%" stopColor="transparent" />
-        </radialGradient>
-        <radialGradient id="specular" cx="36%" cy="30%" r="35%">
-          <stop offset="0%"   stopColor="rgba(255,255,255,0.12)" />
-          <stop offset="100%" stopColor="transparent" />
-        </radialGradient>
-        <radialGradient id="nightSide" cx="70%" cy="60%" r="55%">
-          <stop offset="0%"   stopColor="transparent" />
-          <stop offset="100%" stopColor="rgba(0,0,20,0.55)" />
-        </radialGradient>
-      </defs>
-      {/* Base sphere */}
-      <circle cx={cx} cy={cy} r={planetR} fill="url(#planetBase)" />
-      {/* Dot matrix */}
-      {dots.map((d, i) => {
-        const t = (d.depth + 1) / 2;
-        const r  = d.land ? 1.5 + t * 0.9 : 0.8 + t * 0.6;
-        const op = d.land ? 0.35 + t * 0.65 : 0.08 + t * 0.45;
-        return (
-          <circle key={i} cx={d.px} cy={d.py} r={r}
-            fill={d.land ? "#86efac" : "#c4b5fd"} opacity={op} />
-        );
-      })}
-      {/* Night-side shadow */}
-      <circle cx={cx} cy={cy} r={planetR} fill="url(#nightSide)" />
-      {/* Specular highlight */}
-      <circle cx={cx} cy={cy} r={planetR} fill="url(#specular)" />
-      {/* Atmosphere ring */}
-      <circle cx={cx} cy={cy} r={size * 0.455} fill="url(#planetAtmo)" />
-    </svg>
-  );
-};
-
-// One orbiting moon icon — DOM-driven animation (no React re-renders)
-const OrbitingMoon = ({ src, name, index, total }: {
-  src: string; name: string; index: number; total: number;
-}) => {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const a = 168;   // semi-major axis px — wider for full-width card
-  const b = 58;    // semi-minor axis px  (gives ~70° tilt illusion)
-  const period = 22000; // ms per orbit
-  const phase = (index / total) * Math.PI * 2;
-
-  useAnimationFrame((t) => {
-    if (!ref.current) return;
-    const angle = phase + (t / period) * Math.PI * 2;
-    const depth = Math.sin(angle);       // -1=far, +1=close
-    const px = Math.cos(angle) * a;
-    const py = depth * b;
-    const s  = 0.65 + 0.35 * ((depth + 1) / 2);
-    const op = 0.4  + 0.6  * ((depth + 1) / 2);
-    ref.current.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px)) scale(${s})`;
-    ref.current.style.opacity   = String(op);
-    ref.current.style.zIndex    = String(depth > 0 ? 10 : 3);
-  });
-
-  return (
-    <div ref={ref} title={name} style={{
-      position: "absolute", top: "50%", left: "50%",
-      willChange: "transform, opacity",
-    }}>
-      <div style={{
-        width: "38px", height: "38px", borderRadius: "10px",
-        background: "rgba(255,255,255,0.1)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        backdropFilter: "blur(6px)",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.6)",
-      }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={name} style={{ width: "26px", height: "26px", objectFit: "contain" }} />
-      </div>
-    </div>
-  );
-};
-
-// Photo Card - Large left card
-const PhotoCard = ({ }: { }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.7, delay: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    style={{
-      gridColumn: "1 / 2",
-      gridRow: "1 / 3",
-      borderRadius: "20px",
-      overflow: "hidden",
-      position: "relative",
-      height: "100%",
-      minHeight: "460px",
-      backgroundImage: "url(/portfolio.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center 60%",
-    }}
-  >
-    {/* Animated gradient border */}
-    <motion.div
-      animate={{ opacity: [0.4, 0.9, 0.4] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        position: "absolute", inset: 0, borderRadius: "20px",
-        boxShadow: "inset 0 0 0 1px rgba(167,139,250,0.25)",
-        pointerEvents: "none", zIndex: 10,
-      }}
-    />
-
-    {/* Scrim — heavier at bottom, subtle at top */}
-    <div style={{
-      position: "absolute", inset: 0,
-      background: "linear-gradient(to top, rgba(5,3,14,0.98) 0%, rgba(5,3,14,0.6) 40%, rgba(5,3,14,0.15) 70%, rgba(5,3,14,0.0) 100%)",
-    }} />
-
-    {/* Available badge */}
-    <div style={{
-      position: "absolute", top: "20px", left: "20px", zIndex: 5,
-      display: "flex", alignItems: "center", gap: "7px",
-      padding: "6px 14px", borderRadius: "999px",
-      background: "rgba(0,0,0,0.5)",
-      backdropFilter: "blur(12px)",
-      border: "1px solid rgba(255,255,255,0.1)",
-    }}>
-      <motion.span
-        animate={{ opacity: [1, 0.2, 1] }}
-        transition={{ duration: 2.2, repeat: Infinity }}
-        style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0 }}
-      />
-      <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.88)", fontWeight: 600, letterSpacing: "0.04em" }}>
-        Available for work
-      </span>
-    </div>
-
-    {/* Bottom content */}
-    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "32px 28px", zIndex: 5 }}>
-      {/* Thin accent line */}
-      <div style={{ width: "32px", height: "2px", background: "rgba(167,139,250,0.7)", borderRadius: "1px", marginBottom: "14px" }} />
-      <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", color: "rgba(167,139,250,0.75)", textTransform: "uppercase", marginBottom: "8px" }}>
-        Software Engineer
-      </p>
-      <h2 style={{ fontSize: "34px", fontWeight: 700, marginBottom: "12px", fontFamily: "DM Serif Display, serif", color: "#fff", lineHeight: 1.05 }}>
-        Stefan<br />Perovski
-      </h2>
-      <p style={{ fontSize: "13px", color: "rgba(148,163,184,0.85)", lineHeight: "1.7", maxWidth: "300px" }}>
-        Software Engineering student at FINKI. Building impactful software and driving digital transformation.
-      </p>
-    </div>
-  </motion.div>
-);
-
-// Expertise Card — editorial numbered list
-const ExpertiseCard = ({ }: { }) => {
-  const skills = [
-    { name: "Full-Stack Development", category: "Engineering" },
-    { name: "REST API Design",        category: "Backend"     },
-    { name: "Spring Boot",            category: "Backend"     },
-    { name: "React",                  category: "Frontend"    },
-    { name: "DevOps & CI/CD",         category: "Ops"         },
-    { name: "Database Design",        category: "Data"        },
-  ];
-  const cardBg = "#0c0918";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      style={{
-        gridColumn: "2 / 4",
-        gridRow: "1 / 2",
-        borderRadius: "20px",
-        border: `1px solid ${"rgba(255,255,255,0.06)"}`,
-        background: cardBg,
-        position: "relative",
-        overflow: "hidden",
-        padding: "24px 28px",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Top accent bar */}
-      <div style={{
-        position: "absolute", top: 0, left: "28px", right: "28px", height: "1px",
-        background: "linear-gradient(to right, rgba(167,139,250,0.5), transparent)",
-      }} />
-
-      {/* Header */}
-      <p style={{
-        fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em",
-        color: "#4a3878", textTransform: "uppercase",
-        marginBottom: "18px",
-      }}>
-        Core Skills
-      </p>
-
-      {/* Numbered skill rows */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-        {skills.map((skill, idx) => (
-          <motion.div
-            key={skill.name}
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.4, delay: 0.05 + idx * 0.06, ease: "easeOut" }}
-            viewport={{ once: true }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "10px 0",
-              borderBottom: idx < skills.length - 1
-                ? `1px solid ${"rgba(255,255,255,0.05)"}`
-                : "none",
-              cursor: "default",
-            }}
-          >
-            {/* Left: number + name */}
-            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-              <span style={{
-                fontSize: "11px", fontWeight: 700, fontFamily: "DM Serif Display, serif",
-                color: "rgba(167,139,250,0.35)",
-                letterSpacing: "0.04em", minWidth: "22px",
-              }}>
-                {String(idx + 1).padStart(2, "0")}
-              </span>
-              <span style={{
-                fontSize: "15px", fontWeight: 600,
-                color: "#c8d8f0",
-                letterSpacing: "-0.01em",
-                fontFamily: "DM Serif Display, serif",
-              }}>
-                {skill.name}
-              </span>
-            </div>
-
-            {/* Right: category tag */}
-            <span style={{
-              fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "rgba(167,139,250,0.4)",
-              padding: "3px 10px", borderRadius: "999px",
-              border: `1px solid ${"rgba(167,139,250,0.12)"}`,
-              whiteSpace: "nowrap",
-            }}>
-              {skill.category}
-            </span>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
-
-// Location Card — full planet hero
-const LocationCard = ({ }: { }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    viewport={{ once: true, amount: 0.2 }}
-    style={{
-      gridColumn: "2 / 3",
-      gridRow: "2 / 3",
-      borderRadius: "20px",
-      border: "1px solid rgba(167,139,250,0.12)",
-      background: "#07040e",
-      overflow: "hidden",
-      position: "relative",
-      minHeight: "220px",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    {/* Star field */}
-    <div style={{
-      position: "absolute", inset: 0, pointerEvents: "none",
-      backgroundImage: `
-        radial-gradient(1px 1px at 8% 18%, rgba(255,255,255,0.7) 0%, transparent 100%),
-        radial-gradient(1px 1px at 92% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 50% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.6) 0%, transparent 100%),
-        radial-gradient(1px 1px at 20% 90%, rgba(255,255,255,0.35) 0%, transparent 100%),
-        radial-gradient(1px 1px at 62% 30%, rgba(255,255,255,0.5) 0%, transparent 100%)
-      `,
-    }} />
-
-    {/* Text overlay top-left */}
-    <div style={{ position: "absolute", top: "22px", left: "24px", zIndex: 5 }}>
-      <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", color: "#4a3878", textTransform: "uppercase", marginBottom: "8px" }}>
-        Based in
-      </p>
-      <p style={{ fontSize: "20px", fontWeight: 700, color: "#e2e8f0", fontFamily: "DM Serif Display, serif", lineHeight: 1.1 }}>
-        Skopje,<br />Macedonia
-      </p>
-    </div>
-
-    {/* Open to remote badge — bottom left */}
-    <div style={{
-      position: "absolute", bottom: "18px", left: "24px", zIndex: 5,
-      display: "flex", alignItems: "center", gap: "6px",
-    }}>
-      <motion.span
-        animate={{ opacity: [1, 0.4, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", display: "inline-block" }}
-      />
-      <span style={{ fontSize: "11px", color: "#6b6590", fontWeight: 500 }}>Open to remote worldwide</span>
-    </div>
-
-    {/* Planet — right side */}
-    <div style={{
-      position: "absolute", right: "-20px", top: "50%",
-      transform: "translateY(-50%)",
-      zIndex: 2,
-      animation: "atmospherePulse 6s ease-in-out infinite",
-    }}>
-      <Planet size={160} />
-    </div>
-
-    {/* Scrim so text stays readable */}
-    <div style={{
-      position: "absolute", inset: 0, pointerEvents: "none",
-      background: "linear-gradient(to right, rgba(7,4,14,0.85) 30%, rgba(7,4,14,0.1) 70%)",
-    }} />
-  </motion.div>
-);
-
-// Contact CTA Card
-const ContactCard = ({ }: { }) => {
-  const [copied, setCopied] = React.useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText("stefan.perovski20@gmail.com");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
-      viewport={{ once: true, amount: 0.2 }}
-      style={{
-        gridColumn: "3 / 4",
-        gridRow: "2 / 3",
-        borderRadius: "20px",
-        border: "1px solid rgba(124,58,237,0.25)",
-        background: "linear-gradient(140deg, #5b21b6 0%, #7c3aed 40%, #a855f7 100%)",
-        padding: "28px 26px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        position: "relative",
-        overflow: "hidden",
-        minHeight: "220px",
-      }}
-    >
-      {/* Decorative orb */}
-      <div style={{
-        position: "absolute", top: "-40px", right: "-40px",
-        width: "180px", height: "180px", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
-      <div style={{
-        position: "absolute", bottom: "-60px", left: "-20px",
-        width: "200px", height: "200px", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
-
-      <div style={{ zIndex: 1, marginBottom: "24px" }}>
-        <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", marginBottom: "10px" }}>
-          Get in touch
-        </p>
-        <h3 style={{ fontSize: "26px", fontWeight: 700, fontFamily: "DM Serif Display, serif", color: "#fff", lineHeight: 1.15, marginBottom: "10px" }}>
-          Let&apos;s work<br />together.
-        </h3>
-        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.65)", lineHeight: "1.6" }}>
-          Open to collaborations, freelance & full-time opportunities.
-        </p>
-      </div>
-
-      <motion.button
-        onClick={handleCopy}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.97 }}
-        style={{
-          zIndex: 1,
-          padding: "11px 22px",
-          borderRadius: "12px",
-          background: "rgba(255,255,255,0.15)",
-          backdropFilter: "blur(8px)",
-          border: "1px solid rgba(255,255,255,0.25)",
-          color: "#fff",
-          fontSize: "13px",
-          fontWeight: 600,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          letterSpacing: "0.01em",
-          transition: "background 0.2s ease",
-        }}
-      >
-        {copied ? (
-          <>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
-            <span>Copied!</span>
-          </>
-        ) : (
-          <>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 4h11l5 5v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" /><polyline points="14 2 14 8 20 8" />
-            </svg>
-            <span>Copy Email</span>
-          </>
-        )}
-      </motion.button>
-    </motion.div>
-  );
-};
-
-// Tech Stack Card — Saturn ring system
-const TechStackCard = ({ }: { }) => {
-  const techStack = [
-    { name: "TypeScript",  src: "/Icons/ts.jpeg" },
-    { name: "JavaScript",  src: "/Icons/js.webp" },
-    { name: "Python",      src: "/Icons/py.png" },
-    { name: "Java",        src: "/Icons/java-logo-11609365784e4gmvr3iyr.png" },
-    { name: "React",       src: "/Icons/png-clipart-react-javascript-angularjs-ionic-github-text-logo-thumbnail.png" },
-    { name: "Spring Boot", src: "/Icons/Spring_Boot.svg.png" },
-    { name: "Docker",      src: "/Icons/docker.png" },
-    { name: "Azure",       src: "/Icons/northware-microsoft-azure-logo.png.webp" },
-    { name: "PostgreSQL",  src: "/Icons/Postgresql_elephant.svg.png" },
-    { name: "Git",         src: "/Icons/Git_icon.svg.png" },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-      viewport={{ once: true, amount: 0.2 }}
-      style={{
-        gridColumn: "1 / 4",
-        gridRow: "3 / 4",
-        borderRadius: "20px",
-        border: "1px solid rgba(167,139,250,0.1)",
-        background: "#07040e",
-        overflow: "hidden",
-        position: "relative",
-        minHeight: "360px",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Star field */}
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        backgroundImage: `
-          radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.65) 0%, transparent 100%),
-          radial-gradient(1px 1px at 80% 8%,  rgba(255,255,255,0.5)  0%, transparent 100%),
-          radial-gradient(1.5px 1.5px at 35% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
-          radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.55) 0%, transparent 100%),
-          radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.45) 0%, transparent 100%),
-          radial-gradient(1px 1px at 5%  85%, rgba(255,255,255,0.4)  0%, transparent 100%),
-          radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,0.35) 0%, transparent 100%),
-          radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.3)  0%, transparent 100%)
-        `,
-      }} />
-
-      {/* Label */}
-      <div style={{ position: "absolute", top: "24px", left: "26px", zIndex: 10 }}>
-        <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", color: "#4a3878", textTransform: "uppercase", marginBottom: "4px" }}>
-          Tech Stack
-        </p>
-        <p style={{ fontSize: "16px", fontWeight: 700, color: "#e2e8f0", fontFamily: "DM Serif Display, serif" }}>
-          Technologies
-        </p>
-      </div>
-
-      {/* Orbit system — centered in card */}
-      <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-
-        {/* Back-half ring — z-index 2 (behind planet) */}
-        <svg style={{ position: "absolute", zIndex: 2, pointerEvents: "none" }} width="380" height="140" viewBox="0 0 380 140">
-          <ellipse cx="190" cy="70" rx="180" ry="62"
-            fill="none" stroke="rgba(96,165,250,0.28)" strokeWidth="1.5"
-            strokeDasharray={`${Math.PI * 180} ${Math.PI * 180}`}
-            strokeDashoffset={`${Math.PI * 180 / 2}`}
-            style={{ animation: "ringShimmer 4s ease-in-out infinite" }}
-          />
-        </svg>
-
-        {/* Planet — z-index 5 */}
-        <div style={{ position: "absolute", zIndex: 5, pointerEvents: "none" }}>
-          {/* Atmosphere pulse */}
-          <div style={{
-            position: "absolute", top: "50%", left: "50%",
-            width: "100px", height: "100px", borderRadius: "50%",
-            marginLeft: "-50px", marginTop: "-50px",
-            background: "radial-gradient(circle, transparent 38%, rgba(96,165,250,0.22) 60%, transparent 75%)",
-            animation: "atmospherePulse 3s ease-in-out infinite",
-          }} />
-          {/* Sphere */}
-          <div style={{
-            width: "72px", height: "72px", borderRadius: "50%",
-            background: "radial-gradient(circle at 35% 30%, #93c5fd 0%, #2563eb 35%, #1e3a8a 65%, #020b1f 100%)",
-            boxShadow: "0 0 32px rgba(59,130,246,0.55), 0 0 64px rgba(139,92,246,0.2)",
-            position: "relative",
-          }} />
-        </div>
-
-        {/* Front-half ring — z-index 8 (in front of planet) */}
-        <svg style={{ position: "absolute", zIndex: 8, pointerEvents: "none" }} width="380" height="140" viewBox="0 0 380 140">
-          <ellipse cx="190" cy="70" rx="180" ry="62"
-            fill="none" stroke="rgba(96,165,250,0.45)" strokeWidth="2"
-            strokeDasharray={`${Math.PI * 180} ${Math.PI * 180}`}
-            strokeDashoffset="0"
-            style={{ animation: "ringShimmer 4s ease-in-out infinite" }}
-          />
-        </svg>
-
-        {/* Orbiting moons */}
-        {techStack.map((tech, idx) => (
-          <OrbitingMoon
-            key={tech.name}
-            src={tech.src}
-            name={tech.name}
-            index={idx}
-            total={techStack.length}
-          />
-        ))}
-      </div>
-
-      {/* Bottom label row */}
-      <div style={{
-        position: "absolute", bottom: "18px", left: 0, right: 0,
-        display: "flex", justifyContent: "center",
-        zIndex: 10, pointerEvents: "none",
-      }}>
-        <p style={{ fontSize: "10px", color: "#2d1f4a", letterSpacing: "0.08em" }}>
-          Hover an icon to see the name
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
-// Animated Section Title Component
-const AnimatedSectionTitle = ({ children, index }: { children: React.ReactNode; index?: string }) => {
-  const theme = darkTheme;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      viewport={{ once: true, amount: 0.2 }}
-      style={{ marginBottom: "36px", position: "relative" }}
-    >
-      {index && (
-        <span style={{
-          display: "block",
-          fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em",
-          color: "rgba(167,139,250,0.5)",
-          textTransform: "uppercase", marginBottom: "6px",
-        }}>
-          {index}
-        </span>
-      )}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <h2 style={{
-          fontFamily: "DM Serif Display, serif",
-          fontSize: "28px", fontWeight: 400,
-          color: theme.text, lineHeight: 1.1,
-        }}>
-          {children}
-        </h2>
-        {/* Expanding accent line */}
-        <motion.div
-          initial={{ scaleX: 0, transformOrigin: "left" }}
-          whileInView={{ scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-          viewport={{ once: true }}
-          style={{
-            flex: 1, height: "1px",
-            background: "linear-gradient(to right, rgba(167,139,250,0.5), transparent)",
-            transformOrigin: "left",
-          }}
-        />
-      </div>
-    </motion.div>
-  );
-};
-
-// Experience Card — timeline style
-const ExperienceCard = ({
-  id: _id,
-  logo: _logo,
-  title,
-  company,
-  meta,
-  bullets,
-  isLast,
-}: {
-  id: string; logo: string; title: string; company: string;
-  meta: string; bullets: string[]; isLast?: boolean;
-}) => {
-  const theme = darkTheme;
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -16 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      viewport={{ once: true, amount: 0.15 }}
-      style={{ display: "flex", gap: "24px", paddingBottom: isLast ? 0 : "36px", position: "relative" }}
-    >
-      {/* Timeline spine */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "20px" }}>
-        <div style={{
-          width: "12px", height: "12px", borderRadius: "50%", flexShrink: 0, marginTop: "4px",
-          background: "#7c3aed",
-          boxShadow: "0 0 0 3px rgba(139,92,246,0.2), 0 0 12px rgba(139,92,246,0.4)",
-        }} />
-        {!isLast && (
-          <div style={{
-            flex: 1, width: "1px", marginTop: "6px",
-            background: "linear-gradient(to bottom, rgba(124,58,237,0.35), transparent)",
-          }} />
-        )}
-      </div>
-
-      {/* Card content */}
-      <motion.div
-        whileHover={{ y: -1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-        onClick={() => bullets.length > 0 && setOpen(!open)}
-        style={{
-          flex: 1,
-          background: "rgba(10,18,40,0.7)",
-          backdropFilter: "blur(12px)",
-          border: `1px solid ${"rgba(167,139,250,0.1)"}`,
-          borderRadius: "16px",
-          padding: "20px 24px",
-          cursor: bullets.length > 1 ? "pointer" : "default",
-          transition: "border-color 0.2s ease, background 0.2s ease",
-        }}
-      >
-        {/* Date chip */}
-        <span style={{
-          display: "inline-block", fontSize: "10px", fontWeight: 600,
-          letterSpacing: "0.08em", color: "rgba(167,139,250,0.7)",
-          background: "rgba(139,92,246,0.1)",
-          border: `1px solid ${"rgba(167,139,250,0.15)"}`,
-          borderRadius: "999px", padding: "3px 10px", marginBottom: "10px",
-        }}>
-          {meta}
-        </span>
-
-        <div style={{ fontSize: "16px", fontWeight: 600, color: theme.text, marginBottom: "3px", lineHeight: 1.3 }}>
-          {title}
-        </div>
-        <div style={{ fontSize: "13px", color: theme.accentLight, marginBottom: bullets.length > 0 ? "14px" : 0, fontWeight: 400 }}>
-          {company}
-        </div>
-
-        {/* Bullets — always show first, expand rest */}
-        {bullets.length > 0 && (
-          <div>
-            {(open ? bullets : bullets.slice(0, 1)).map((b, i) => (
-              <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "6px" }}>
-                <span style={{ color: "rgba(167,139,250,0.5)", marginTop: "2px", fontSize: "12px", flexShrink: 0 }}>→</span>
-                <span style={{ fontSize: "13px", color: theme.textSecondary, lineHeight: "1.65" }}>{b}</span>
-              </div>
-            ))}
-            {bullets.length > 1 && (
-              <button onClick={(e) => { e.stopPropagation(); setOpen(!open); }} style={{
-                marginTop: "6px", fontSize: "11px", fontWeight: 600,
-                color: "rgba(167,139,250,0.7)",
-                background: "none", border: "none", cursor: "pointer", padding: 0,
-                letterSpacing: "0.04em",
-              }}>
-                {open ? "Show less ↑" : `+${bullets.length - 1} more ↓`}
-              </button>
-            )}
-          </div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-// Project Card
-const ProjectCard = ({
-  id: _id,
-  title,
-  description,
-  tags,
-  featured,
-  logo,
-  links,
-}: {
-  id: string; title: string; description: string; tags: string[];
-  featured?: boolean; logo?: string; links: { label: string; href: string }[];
-}) => {
-  const theme = darkTheme;
-  const [rotateX, setRotateX] = React.useState(0);
-  const [rotateY, setRotateY] = React.useState(0);
-  const [isHovered, setIsHovered] = React.useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    setRotateY((e.clientX - rect.left - cx) * 0.1);
-    setRotateX((cy - (e.clientY - rect.top)) * 0.1);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      viewport={{ once: true, amount: 0.2 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => { setRotateX(0); setRotateY(0); setIsHovered(false); }}
-      onMouseEnter={() => setIsHovered(true)}
-      style={{
-        background: "rgba(10,18,40,0.8)",
-        border: `1px solid ${isHovered
-          ? ("rgba(167,139,250,0.35)")
-          : ("rgba(167,139,250,0.1)")}`,
-        borderRadius: "18px",
-        padding: "24px",
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(${isHovered ? "-3px" : "0"})`,
-        transition: "border-color 0.25s ease, box-shadow 0.25s ease",
-        position: "relative",
-        overflow: "hidden",
-        boxShadow: isHovered
-          ? ("0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(167,139,250,0.1)")
-          : "none",
-      }}
-    >
-      {/* Featured top bar */}
-      {featured && (
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-          background: "linear-gradient(90deg, #7c3aed, #c084fc, #7c3aed)",
-          backgroundSize: "200% 100%",
-          animation: "ringShimmer 3s linear infinite",
-        }} />
-      )}
-
-      {/* Hover glow */}
-      {isHovered && (
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none", borderRadius: "18px",
-          background: "radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.08) 0%, transparent 65%)",
-        }} />
-      )}
-
-      {/* Logo + title row */}
-      {logo && (
-        <div style={{ marginBottom: "14px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={logo}
-            alt={title + " logo"}
-            style={{
-              width: "52px", height: "52px", borderRadius: "14px",
-              objectFit: "cover",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-              border: "1px solid rgba(167,139,250,0.15)",
-            }}
-          />
-        </div>
-      )}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "10px" }}>
-        <h3 style={{ fontSize: "15px", fontWeight: 700, color: theme.text, lineHeight: 1.3 }}>{title}</h3>
-        {featured && (
-          <span style={{
-            fontSize: "9px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-            padding: "3px 9px", borderRadius: "999px",
-            background: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(168,85,247,0.15))",
-            border: "1px solid rgba(167,139,250,0.3)",
-            color: "#c4b5fd",
-            whiteSpace: "nowrap", marginLeft: "10px", flexShrink: 0,
-          }}>
-            Featured
-          </span>
-        )}
-      </div>
-
-      <p style={{ fontSize: "13px", color: theme.textSecondary, marginBottom: "16px", lineHeight: "1.65" }}>
-        {description}
-      </p>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "18px" }}>
-        {tags.map((tag) => (
-          <span key={tag} style={{
-            fontSize: "10px", fontWeight: 600, padding: "4px 10px",
-            background: "rgba(167,139,250,0.08)",
-            border: `1px solid ${"rgba(167,139,250,0.18)"}`,
-            borderRadius: "999px", color: "#c4b5fd",
-            letterSpacing: "0.02em",
-          }}>
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div style={{ display: "flex", gap: "8px" }}>
-        {links.map((link) => (
-          <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "5px",
-              fontSize: "12px", fontWeight: 600, color: "#c4b5fd",
-              textDecoration: "none", padding: "6px 14px",
-              border: `1px solid ${"rgba(167,139,250,0.2)"}`,
-              borderRadius: "8px",
-              background: "rgba(124,58,237,0.06)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            {link.label}
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 9L9 1M9 1H3M9 1V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-          </a>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
-
-// Soft Skills Grid Card
-const SkillCard = ({
-  title,
-  description,
-  icon,
-}: {
-  title: string;
-  description: string;
-  icon: string;
-}) => {
-  const theme = darkTheme;
-  const [isHovered, setIsHovered] = React.useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
-      viewport={{ once: true, amount: 0.2 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        background: `${"rgba(17, 32, 64, 0.5)"}`,
-        backdropFilter: "blur(8px)",
-        border: `0.5px solid ${theme.accentDark}`,
-        borderRadius: "12px",
-        padding: "24px 20px",
-        textAlign: "center",
-        transition: "all 0.3s ease",
-        boxShadow: isHovered
-          ? `0 0 20px rgba(96, 165, 250, 0.25), 0 8px 32px rgba(96, 165, 250, 0.1)`
-          : "none",
-        transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-      }}
-    >
-      <div
-        style={{
-          width: "60px",
-          height: "60px",
-          margin: "0 auto 14px",
-          position: "relative",
-          filter: "brightness(0) invert(1)",
-        }}
-      >
-        <Image src={`/Icons/${icon}`} alt={title} width={60} height={60} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
-      <h3 style={{ fontSize: "14px", fontWeight: 500, color: theme.text, marginBottom: "8px" }}>{title}</h3>
-      <p style={{ fontSize: "12px", color: theme.textSecondary, lineHeight: "1.5" }}>{description}</p>
-    </motion.div>
-  );
-};
-
-
-// ============ VIDEO HERO SECTION ============
-const VideoHeroSection = () => {
-  const { scrollY } = useScroll();
-
-  // As user scrolls: text fades, video slightly zooms
-  const textOpacity   = useTransform(scrollY, [0, 420], [1, 0]);
-  const textY         = useTransform(scrollY, [0, 420], ["0%", "-12%"]);
-  const videoScale    = useTransform(scrollY, [0, 700], [1, 1.1]);
-  const overlayOpacity = useTransform(scrollY, [0, 500], [0, 0.55]);
-
-  return (
-    <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 0, overflow: "hidden" }}>
-      {/* Video — subtle parallax zoom */}
-      <motion.div style={{ position: "absolute", inset: 0, scale: videoScale }}>
-        <video
-          autoPlay muted loop playsInline preload="metadata"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        >
-          <source src="/herosection.mp4" type="video/mp4" />
-        </video>
-      </motion.div>
-
-      {/* Permanent dark overlay — keeps text readable */}
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        background: "linear-gradient(to bottom, rgba(8,6,15,0.35) 0%, rgba(8,6,15,0.15) 45%, rgba(8,6,15,0.65) 80%, #08060f 100%)",
-      }} />
-
-      {/* Scroll-driven extra darkening */}
-      <motion.div style={{
-        position: "absolute", inset: 0, background: "#08060f", opacity: overlayOpacity, pointerEvents: "none",
-      }} />
-
-      {/* Centered headline — fades + lifts as user scrolls */}
-      <motion.div style={{
-        position: "absolute", inset: 0,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        opacity: textOpacity, y: textY,
-        pointerEvents: "none",
-      }}>
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.9, ease: "easeOut" }}
-          style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.22em", color: "rgba(167,139,250,0.75)", textTransform: "uppercase", marginBottom: "22px" }}
-        >
-          Portfolio · 2026
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 48 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            fontFamily: "DM Serif Display, serif",
-            fontSize: "clamp(58px, 9vw, 118px)",
-            fontWeight: 400, color: "#fff",
-            textAlign: "center", lineHeight: 1.0,
-            marginBottom: "24px",
-            textShadow: "0 4px 60px rgba(0,0,0,0.6)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Stefan<br />Perovski
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.9 }}
-          style={{ fontSize: "15px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em", fontWeight: 300 }}
-        >
-          Software Engineer · Software Engineering @ FINKI
-        </motion.p>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 1 }}
-        style={{
-          position: "absolute", bottom: "44px", left: "50%", transform: "translateX(-50%)",
-          display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
-          pointerEvents: "none",
-        }}
-      >
-        <span style={{ fontSize: "9px", letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>Scroll</span>
-        <motion.div
-          animate={{ y: [0, 9, 0], opacity: [0.4, 0.9, 0.4] }}
-          transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <svg width="18" height="28" viewBox="0 0 18 28" fill="none">
-            <rect x="1" y="1" width="16" height="22" rx="8" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" />
-            <motion.rect
-              x="7.5" y="5" width="3" height="5" rx="1.5"
-              fill="rgba(255,255,255,0.55)"
-              animate={{ y: [5, 11, 5] }}
-              transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </svg>
-        </motion.div>
-      </motion.div>
-    </div>
-  );
-};
-
 export default function Home() {
-
-  const S = getThemeStyles();
-  const softSkills = getSoftSkills();
-
-
-  const experienceData = [
-    {
-      id: "exp1",
-      logo: "USA",
-      title: "Chair of the Digitalization Committee",
-      company: "University Student Assembly · Ss. Cyril and Methodius University",
-      meta: "Mar 2026 – Present · 2 mos · Skopje",
-      bullets: [
-        "Selected as Chair of the Digitalisation Committee at the University Student Assembly of Ss. Cyril and Methodius University in Skopje.",
-        "Leading initiatives to modernize and digitize university student processes and services.",
-      ],
-    },
-    {
-      id: "exp2",
-      logo: "LINK",
-      title: "Lead Organizer — LINKER Hackathon",
-      company: "FINKI / University Student Assembly",
-      meta: "Apr 18–19, 2026 · Skopje",
-      bullets: [
-        "Identified a real market gap between students and employers and structured it into a concrete, solvable 48-hour challenge brief",
-        "Defined clear deliverable requirements and a 6-dimension evaluation framework covering relevance, innovation, functionality, UX/UI, impact, and presentation",
-        "Coordinated stakeholders across participants, mentors, judges, and companies throughout the event lifecycle",
-        "Produced structured documentation including the challenge brief, judging criteria, and event materials",
-      ],
-    },
-    {
-      id: "exp3",
-      logo: "USA",
-      title: "Multimedia and Public Relations",
-      company: "University Student Assembly · Part-time",
-      meta: "Nov 2025 – Present · 6 mos · Skopje",
-      bullets: ["Managing multimedia content and public relations for the University Student Assembly."],
-    },
-  ];
-
-  const projectsData = [
-    {
-      id: "proj1",
-      title: "MedTech App",
-      description: "Full-stack medical administration and patient management system built with React, Java Spring Boot, and PostgreSQL.",
-      tags: ["React", "Java", "Spring Boot", "PostgreSQL"],
-      featured: true,
-      logo: "/MedTech.png",
-      links: [{ label: "GitHub", href: "https://github.com/steff221/MedTech2.0.git" }],
-    },
-    {
-      id: "proj2",
-      title: "WaterWatch",
-      description: "Early warning platform for river water anomalies using Sentinel-1/2 imagery, z-score analysis, and citizen crowdsourcing.",
-      tags: ["Python", "Flask", "React", "Copernicus API"],
-      featured: false,
-      logo: undefined,
-      links: [
-        { label: "Live", href: "https://water-watch-2t91.vercel.app" },
-        { label: "GitHub", href: "https://github.com/steff221/WaterWatch" },
-      ],
-    },
-  ];
-
-
   return (
     <>
-      <style>{keyframes}</style>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-
-      {/* Video hero is sticky — content panel slides over it */}
-      <VideoHeroSection />
-
-      <main style={{
-        ...S.page,
-        position: "relative",
-        zIndex: 1,
-        borderRadius: "28px 28px 0 0",
-        boxShadow: "0 -24px 80px rgba(0,0,0,0.7)",
-        marginTop: "-28px",
-      }}>
-        <div style={S.wrap}>
-
-          {/* NAVBAR */}
-          <nav style={S.nav}>
-            <span style={S.navName}>Stefan Perovski</span>
-            <div style={S.navLinks}>
-              <a href="#about" style={S.navLink}>About</a>
-              <a href="#experience" style={S.navLink}>Experience</a>
-              <a href="#education" style={S.navLink}>Education</a>
-              <a href="#projects" style={S.navLink}>Projects</a>
-
-            </div>
-          </nav>
-
-
-          {/* ABOUT - BENTO GRID */}
-          <section id="about-grid" style={{ marginBottom: "64px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "3fr 2fr 2fr",
-                gridTemplateRows: "auto auto auto",
-                gap: "14px",
-              }}
-            >
-              <PhotoCard />
-              <ExpertiseCard />
-              <LocationCard />
-              <ContactCard />
-              <TechStackCard />
-            </div>
-          </section>
-
-          {/* EXPERIENCE */}
-          <section id="experience" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle index="01 — Experience">Experience</AnimatedSectionTitle>
-            <div>
-              {experienceData.map((exp, idx) => (
-                <ExperienceCard
-                  key={exp.id}
-                  id={exp.id}
-                  logo={exp.logo}
-                  title={exp.title}
-                  company={exp.company}
-                  meta={exp.meta}
-                  bullets={exp.bullets}
-                 
-                  isLast={idx === experienceData.length - 1}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* EDUCATION */}
-          <section id="education" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle index="02 — Education">Education</AnimatedSectionTitle>
-            <div style={{
-              background: "rgba(255,255,255,0.03)",
-              border: `1px solid ${"rgba(167,139,250,0.1)"}`,
-              borderRadius: "20px",
-              padding: "32px",
-              display: "flex",
-              gap: "28px",
-              alignItems: "flex-start",
-            }}>
-              {/* Left: logo column */}
-              <div style={{
-                width: "56px", height: "56px", borderRadius: "14px", flexShrink: 0,
-                background: "#fff",
-                border: `1px solid ${"rgba(167,139,250,0.15)"}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                overflow: "hidden",
-                padding: "6px",
-              }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/Finki logo.png" alt="FINKI logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-              </div>
-              {/* Right: content */}
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", flexWrap: "wrap", marginBottom: "6px" }}>
-                  <div>
-                    <p style={{ fontWeight: 600, fontSize: "17px", color: "#e2e8f0", marginBottom: "3px" }}>
-                      Faculty of Computer Science and Engineering
-                    </p>
-                    <p style={{ fontSize: "14px", color: "#94a3b8" }}>
-                      Software Engineering · Ss. Cyril and Methodius University, Skopje
-                    </p>
-                  </div>
-                  <span style={{
-                    fontSize: "12px", fontWeight: 500, padding: "4px 12px", borderRadius: "999px", whiteSpace: "nowrap",
-                    background: "rgba(167,139,250,0.1)",
-                    color: "#a78bfa",
-                    border: `1px solid ${"rgba(167,139,250,0.2)"}`,
-                  }}>Sep 2023 – Present</span>
-                </div>
-                <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                  {["JavaScript", "TypeScript", "Python", "Java", "React", "Spring Boot", "PostgreSQL", "Docker"].map((skill) => (
-                    <span key={skill} style={{
-                      fontSize: "12px", padding: "4px 12px", borderRadius: "999px",
-                      background: "rgba(255,255,255,0.05)",
-                      color: "#94a3b8",
-                      border: `1px solid ${"rgba(255,255,255,0.08)"}`,
-                    }}>{skill}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* PROJECTS */}
-          <section id="projects" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle index="03 — Projects">Projects</AnimatedSectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              {projectsData.map((proj) => (
-                <ProjectCard
-                  key={proj.id}
-                  id={proj.id}
-                  title={proj.title}
-                  description={proj.description}
-                  tags={proj.tags}
-                  featured={proj.featured}
-                  logo={proj.logo}
-                  links={proj.links}
-                 
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* SOFT SKILLS */}
-          <section id="skills" style={{ marginBottom: "80px" }}>
-            <AnimatedSectionTitle index="04 — Soft Skills">Soft Skills</AnimatedSectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px" }}>
-              {softSkills.map((skill) => (
-                <SkillCard
-                  key={skill.title}
-                  title={skill.title}
-                  description={skill.desc}
-                  icon={skill.icon}
-                 
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* FOOTER */}
-          <footer style={S.footer}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px", marginBottom: "32px" }}>
-              <div>
-                <p style={{ fontFamily: "DM Serif Display, serif", fontSize: "20px", color: "#e2e8f0", marginBottom: "6px" }}>Stefan Perovski</p>
-                <p style={{ fontSize: "13px", color: "#475569" }}>Software Engineering Student · FINKI, Skopje</p>
-              </div>
-              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                {[
-                  { label: "GitHub", href: "https://github.com/steff221" },
-                  { label: "LinkedIn", href: "https://www.linkedin.com/in/stefan-perovski-a5b401294/" },
-                  { label: "Email", href: "mailto:stefan.perovski20@gmail.com" },
-                ].map((link) => (
-                  <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" style={{
-                    fontSize: "12px", fontWeight: 600,
-                    color: "#475569",
-                    textDecoration: "none", padding: "7px 16px",
-                    border: `1px solid ${"rgba(167,139,250,0.1)"}`,
-                    borderRadius: "999px",
-                    background: "rgba(255,255,255,0.03)",
-                    transition: "all 0.2s ease",
-                  }}>
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-            <p style={{ fontSize: "11px", color: "#2d1f4a", letterSpacing: "0.04em" }}>
-              © 2026 Stefan Perovski · Built with Next.js & Framer Motion
-            </p>
-          </footer>
-
-        </div>
+      <RevealObserver />
+      <Header />
+      <main>
+        <Hero />
+        <Marquee />
+        <Work />
+        <Experience />
+        <About />
       </main>
+      <Contact />
     </>
+  );
+}
+
+function Header() {
+  return (
+    <header className="sticky top-0 z-20 border-b-2 border-ink bg-cream/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <a href="#top" className="group flex items-center gap-2.5 font-display text-lg whitespace-nowrap">
+          <span className="size-2.5 shrink-0 rotate-45 bg-cinnamon transition-transform duration-300 group-hover:rotate-[135deg]" aria-hidden />
+          Stefan Perovski
+        </a>
+        <nav className="flex items-center gap-1 sm:gap-2">
+          {nav.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-paper sm:inline-block"
+            >
+              {item.label}
+            </a>
+          ))}
+          <a href={links.cv} download className="btn bg-card px-3.5 py-1.5 text-sm whitespace-nowrap">
+            <DownloadIcon /> CV
+          </a>
+          <a href="#contact" className="btn hidden bg-caramel px-4 py-1.5 text-sm whitespace-nowrap min-[420px]:inline-flex">
+            Say hi
+          </a>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/** Splits text into individually animated words, starting at `from` in the stagger order. */
+function Words({ text, from = 0 }: { text: string; from?: number }) {
+  return text.split(" ").map((w, i) => (
+    <span key={i} className="word" style={{ animationDelay: `${(from + i) * 70}ms` }}>
+      {w}
+      {" "}
+    </span>
+  ));
+}
+
+function Hero() {
+  return (
+    <div className="relative">
+    <section id="top" className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.25fr_1fr] lg:pt-20 lg:pb-28">
+      <div>
+        <h1 className="font-display text-[2.6rem] leading-[1.1] tracking-tight sm:text-6xl lg:text-[3.2rem]">
+          <Words text="Hi, I'm Stefan." />
+          <span className="word" style={{ animationDelay: "210ms" }}>
+            <HandWave />
+          </span>
+          <br />
+          <Words text="I build software for the" from={3} />
+          <span className="relative isolate inline-block">
+            <span className="marker" aria-hidden />
+            <Words text="people around me." from={8} />
+          </span>
+        </h1>
+        <p className="rise mt-7 max-w-xl text-lg leading-relaxed text-ink/80" style={{ animationDelay: "700ms" }}>
+          I&apos;m a fourth-year software engineering student at FINKI in Skopje, working full-stack with Java
+          and Spring Boot. I&apos;ve shipped several complete systems, including an internship
+          platform now in production at my university. Most of them start as a problem someone
+          nearby actually has, and testing and security are part of how I build them, not
+          something I add later.
+        </p>
+        <div className="rise mt-8 flex flex-wrap gap-3" style={{ animationDelay: "850ms" }}>
+          <a href="#work" className="btn bg-mocha text-cream">
+            See my work <Arrow />
+          </a>
+          {/* Docs → download reveal adapted from Uiverse.io by barisdogansutcu */}
+          <a href={links.cv} download className="uv-cv" aria-label="Download my CV as a PDF">
+            <span className="docs">
+              <DocIcon /> My CV <small>PDF</small>
+            </span>
+            <span className="download" aria-hidden>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div className="rise relative mx-auto w-full max-w-md lg:max-w-none" style={{ animationDelay: "200ms" }}>
+        <Tilt className="relative">
+          <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-[2rem] bg-cinnamon" aria-hidden />
+          <div className="relative overflow-hidden rounded-[2rem] border-[3px] border-ink bg-[#f6ebcd]">
+            <Image
+              src="/stefan.png"
+              alt="Illustration of Stefan smiling at his desk with a laptop"
+              width={1400}
+              height={1285}
+              loading="eager"
+              fetchPriority="high"
+              sizes="(min-width: 1024px) 520px, 90vw"
+              className="h-auto w-full"
+            />
+          </div>
+        </Tilt>
+        <SpinBadge />
+        <div className="bob absolute -bottom-5 -left-3 rounded-xl border-2 border-ink bg-caramel px-4 py-2 text-sm font-semibold shadow-block sm:-left-6">
+          📍 Skopje, Macedonia
+        </div>
+      </div>
+    </section>
+    </div>
+  );
+}
+
+/** Rotating circular text badge adapted from Uiverse.io by Creatlydev */
+function SpinBadge() {
+  const text = "OPEN TO WORK • SAY HI • ";
+  const chars = [...text];
+  return (
+    <a
+      href="#contact"
+      className="uv-spin absolute -top-9 -right-2 z-10 sm:-right-6"
+      style={{ "--step": `${360 / chars.length}deg` } as React.CSSProperties}
+      aria-label="Open to work, say hi"
+    >
+      <span className="ring" aria-hidden>
+        {chars.map((c, i) => (
+          <span key={i} style={{ "--i": i } as React.CSSProperties}>
+            {c}
+          </span>
+        ))}
+      </span>
+      <span className="core" aria-hidden>
+        <ArrowUpRight />
+        <ArrowUpRight />
+      </span>
+    </a>
+  );
+}
+
+function Marquee() {
+  const items = toolbox[0].items;
+  const row = (hidden: boolean) => (
+    <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
+      {items.map((t) => (
+        <li key={t} className="flex items-center gap-6 pr-6 font-display text-2xl whitespace-nowrap sm:text-3xl">
+          {t}
+          <span className="size-2.5 shrink-0 rotate-45 bg-caramel" aria-hidden />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="marquee overflow-hidden border-t-2 border-ink bg-ink py-4 text-cream" aria-label="Technologies I use">
+      <div className="marquee-track flex w-max">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  return (
+    <div data-reveal className="mb-10 max-w-2xl">
+      <p className="mb-2 text-sm font-semibold tracking-[0.14em] text-cocoa uppercase">{eyebrow}</p>
+      <h2 className="font-display text-4xl tracking-tight sm:text-5xl">{title}</h2>
+      {children && <p className="mt-4 text-lg leading-relaxed text-ink/75">{children}</p>}
+    </div>
+  );
+}
+
+function Work() {
+  return (
+    <section id="work" className="border-y-2 border-ink bg-paper">
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
+        <SectionHeading eyebrow="Work" title="Things I've built">
+          Apps for students, a clinic, a river and a café. Mostly Java and TypeScript, with a soft spot for mobile.
+        </SectionHeading>
+
+        <div data-reveal>
+          <article className="block-card group grid overflow-hidden lg:grid-cols-[1fr_400px]">
+            <div className="flex flex-col p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-ink px-3 py-1 text-xs font-semibold text-cream">Featured</span>
+                {featured.badge && <Badge>{featured.badge}</Badge>}
+                <span className="text-sm font-medium text-ink/65">{featured.kind}</span>
+              </div>
+              <h3 className="font-display text-3xl sm:text-4xl">{featured.title}</h3>
+              <p className="mt-3 leading-relaxed text-ink/80">{featured.description}</p>
+              <ul className="mt-5 space-y-2 text-sm">
+                {featured.highlights.map((h) => (
+                  <li key={h} className="flex gap-2.5">
+                    <span className="mt-1.5 size-2 shrink-0 rotate-45 bg-cinnamon" aria-hidden />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <Tags tags={featured.tags} className="mt-6" />
+              <ProjectLinks links={featured.links} className="mt-auto pt-6" />
+            </div>
+            <div className="uv-chevron relative flex items-center justify-center border-t-2 border-ink px-6 py-10 sm:px-10 lg:border-t-0 lg:border-l-2">
+              <div className="relative w-full max-w-[280px] -rotate-2 transition-transform duration-500 group-hover:rotate-0">
+                <div className="absolute inset-0 translate-x-2.5 translate-y-2.5 rounded-[2.2rem] bg-cinnamon" aria-hidden />
+                <Image
+                  src={featured.image!}
+                  alt="The FINKI Scheduler app home screen: today's classes, tasks and this week's timetable"
+                  width={708}
+                  height={1551}
+                  sizes="280px"
+                  className="relative h-auto w-full rounded-[2.2rem] border-[3px] border-ink"
+                />
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div className="mt-8 grid gap-8 md:grid-cols-2">
+          {projects.map((p, i) => (
+            <div key={p.title} data-reveal style={{ "--d": `${(i % 2) * 120}ms` } as React.CSSProperties}>
+              <ProjectCard project={p} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectCard({ project: p }: { project: Project }) {
+  return (
+    <article className="block-card group flex h-full flex-col p-6 sm:p-7">
+      <div className="mb-5 flex items-center gap-4">
+        <div
+          className={`wiggle grid h-16 shrink-0 place-items-center overflow-hidden rounded-2xl border-2 border-ink ${p.logoWide ? "w-36" : "w-16"}`}
+          style={{ background: p.imageBg ?? "var(--color-caramel)" }}
+        >
+          {p.image ? (
+            <Image
+              src={p.image}
+              alt=""
+              width={p.logoWide ? 144 : 64}
+              height={64}
+              className={`size-full object-contain ${p.logoWide ? "px-2.5 py-2" : "p-1"}`}
+            />
+          ) : (
+            <WaveMark />
+          )}
+        </div>
+        <div>
+          <h3 className="font-display text-2xl">{p.title}</h3>
+          <p className="text-sm font-medium text-ink/65">{p.kind}</p>
+        </div>
+      </div>
+      {p.badge && <Badge className="mb-4 self-start">{p.badge}</Badge>}
+      <p className="leading-relaxed text-ink/80">{p.description}</p>
+      <Tags tags={p.tags} className="mt-5" />
+      <ProjectLinks links={p.links} className="mt-auto pt-6" />
+    </article>
+  );
+}
+
+function Badge({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-caramel px-2.5 py-0.5 text-xs font-semibold ${className}`}
+    >
+      <span className="size-1.5 rounded-full bg-ink" aria-hidden />
+      {children}
+    </span>
+  );
+}
+
+function Tags({ tags, className = "" }: { tags: string[]; className?: string }) {
+  return (
+    <ul className={`flex flex-wrap gap-2 ${className}`}>
+      {tags.map((t) => (
+        <li key={t} className="rounded-full border-[1.5px] border-ink/25 bg-cream px-2.5 py-0.5 text-xs font-medium">
+          {t}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ProjectLinks({ links: l, className = "" }: { links: Project["links"]; className?: string }) {
+  return (
+    <div className={`flex flex-wrap gap-5 ${className}`}>
+      {l.map((link) => (
+        <a
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link-underline inline-flex items-center gap-1.5 font-semibold"
+        >
+          {link.label} <Arrow />
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function Experience() {
+  return (
+    <section id="experience" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
+      <SectionHeading eyebrow="Experience" title="Outside the editor">
+        When I&apos;m not writing code, I&apos;m usually organizing the people who will use it.
+      </SectionHeading>
+      <ol data-reveal className="relative">
+        <span className="grow-y absolute top-0 bottom-0 left-0 w-0.5 bg-ink" aria-hidden />
+        {experience.map((e, i) => (
+          <li key={e.title} className="relative pb-12 pl-8 last:pb-0 sm:pl-10">
+            <span
+              className="pop absolute top-1.5 -left-[7px] size-4 rounded-full border-2 border-ink bg-caramel"
+              style={{ "--i": i } as React.CSSProperties}
+              aria-hidden
+            />
+            <div className="grid gap-2 md:grid-cols-[1fr_auto] md:gap-8">
+              <div>
+                <h3 className="font-display text-2xl">{e.title}</h3>
+                <p className="mt-1 font-medium text-cocoa">{e.org}</p>
+              </div>
+              <p className="text-sm font-semibold whitespace-nowrap text-cocoa md:pt-2">{e.when}</p>
+            </div>
+            <ul className="mt-4 max-w-3xl space-y-2 leading-relaxed text-ink/80">
+              {e.points.map((pt) => (
+                <li key={pt}>{pt}</li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section id="about" className="border-t-2 border-ink bg-paper">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
+        <div>
+          <SectionHeading eyebrow="About" title="School, skills & languages" />
+          <div data-reveal>
+            <div className="block-card group flex gap-5 p-6">
+              <div className="wiggle grid size-16 shrink-0 place-items-center rounded-2xl border-2 border-ink bg-white p-1.5">
+                <Image src="/Finki logo.png" alt="FINKI" width={56} height={56} className="size-full object-contain" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-cocoa">{education.when}</p>
+                <h3 className="font-display text-xl">{education.degree}</h3>
+                <p className="mt-1 text-ink/75">{education.school}</p>
+                <p className="mt-4 mb-2 text-xs font-semibold tracking-[0.14em] text-cocoa uppercase">Coursework</p>
+                <Tags tags={education.coursework} />
+              </div>
+            </div>
+          </div>
+          <div data-reveal style={{ "--d": "100ms" } as React.CSSProperties}>
+            <h3 className="mt-10 mb-4 font-display text-xl">Languages I speak</h3>
+            <ul className="mb-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {languages.map((l) => (
+                <li key={l.name} className="rounded-2xl border-2 border-ink bg-card px-4 py-3">
+                  <p className="font-semibold">{l.name}</p>
+                  <p className="text-sm text-cocoa">{l.level}</p>
+                </li>
+              ))}
+            </ul>
+            <h3 className="mb-4 font-display text-xl">How I like to work</h3>
+            <ul className="flex flex-wrap gap-2.5">
+              {habits.map((h) => (
+                <li
+                  key={h}
+                  className="rounded-full border-2 border-ink bg-card px-4 py-1.5 text-sm font-medium transition-transform hover:-rotate-2 hover:bg-caramel"
+                >
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div data-reveal className="lg:pt-[7.5rem]" style={{ "--d": "150ms" } as React.CSSProperties}>
+          <div className="block-card p-6 sm:p-8">
+            <h3 className="font-display text-2xl">Toolbox</h3>
+            <p className="mt-1 text-sm text-ink/70">Core is what I use every day; familiar is what I&apos;ve shipped with.</p>
+            <dl className="mt-6 space-y-6">
+              {toolbox.map((g) => (
+                <div key={g.group}>
+                  <dt className="mb-2.5 text-xs font-semibold tracking-[0.14em] text-cocoa uppercase">{g.group}</dt>
+                  <dd>
+                    <Tags tags={g.items} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  const rows = [
+    { icon: <MailIcon />, label: "Email", value: links.email, href: `mailto:${links.email}`, copy: true },
+    { icon: <LinkedInIcon />, label: "LinkedIn", value: "Stefan Perovski", href: links.linkedin },
+    { icon: <GitHubIcon />, label: "GitHub", value: links.github.replace("https://github.com/", "@"), href: links.github },
+    { icon: <DownloadIcon />, label: "Résumé", value: "Download my CV (PDF)", href: links.cv, download: true },
+    { icon: <PinIcon />, label: "Based in", value: "Skopje, Macedonia · open to remote" },
+  ];
+
+  return (
+    <footer id="contact" className="border-t-2 border-ink bg-ink text-cream">
+      <div className="mx-auto max-w-6xl px-4 pt-20 pb-10 sm:px-6 lg:pt-28">
+        <div data-reveal className="mb-12 flex flex-wrap items-end justify-between gap-x-10 gap-y-12">
+          <div className="max-w-2xl">
+            <p className="mb-3 text-sm font-semibold tracking-[0.14em] text-caramel uppercase">Contact</p>
+            <h2 className="font-display text-5xl tracking-tight sm:text-6xl">Pull up a chair.</h2>
+            <p className="mt-5 text-lg leading-relaxed text-cream/80">
+              Internship, side project, or you just want to talk student tech in Skopje. Write me.
+            </p>
+          </div>
+          {/* Layered 3D icons adapted from Uiverse.io by vikas7754 */}
+          <ul className="flex gap-7 pb-8 pl-1">
+            {[
+              { label: "LinkedIn", href: links.linkedin, icon: <LinkedInIcon /> },
+              { label: "GitHub", href: links.github, icon: <GitHubIcon /> },
+              { label: "Email", href: `mailto:${links.email}`, icon: <MailIcon /> },
+              { label: "CV", href: links.cv, icon: <DocIcon />, download: true },
+            ].map((s) => (
+              <li key={s.label}>
+                <a
+                  href={s.href}
+                  className="uv-layer"
+                  aria-label={s.label}
+                  download={s.download || undefined}
+                  target={s.href.startsWith("http") ? "_blank" : undefined}
+                  rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
+                  <span className="layer" aria-hidden>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span>{s.icon}</span>
+                  </span>
+                  <span className="label" aria-hidden>
+                    {s.label}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div data-reveal style={{ "--d": "120ms" } as React.CSSProperties}>
+          <div className="grid grid-cols-1 overflow-hidden rounded-[1.75rem] border-2 border-cream bg-card text-ink shadow-[6px_6px_0_0_var(--color-caramel)] sm:shadow-[10px_10px_0_0_var(--color-caramel)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
+            <div className="flex flex-col border-b-2 border-ink bg-paper p-6 sm:p-8 lg:border-r-2 lg:border-b-0">
+              <div>
+                <p className="font-display text-2xl">Stefan Perovski</p>
+                <p className="mt-1 text-sm text-ink/70">
+                  I&apos;m a 4th year software engineering student at FINKI.
+                </p>
+              </div>
+
+              <ul className="mt-6 divide-y-2 divide-dashed divide-ink/15">
+                {rows.map((r) => (
+                  <li key={r.label} className="flex items-center gap-3 py-3.5">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl border-2 border-ink bg-caramel">
+                      {r.icon}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold tracking-[0.12em] text-cocoa uppercase">{r.label}</p>
+                      {r.href ? (
+                        <a
+                          href={r.href}
+                          download={r.download || undefined}
+                          target={r.href.startsWith("http") ? "_blank" : undefined}
+                          rel={r.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="link-underline block truncate font-semibold"
+                        >
+                          {r.value}
+                        </a>
+                      ) : (
+                        <p className="font-semibold">{r.value}</p>
+                      )}
+                    </div>
+                    {r.copy && <CopyEmail email={links.email} />}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Notebook paper pattern adapted from Uiverse.io by artvelog */}
+            <div className="uv-notebook p-6 pl-8 sm:p-8 sm:pl-10">
+              <p className="font-display text-2xl">Send a note</p>
+              <p className="mt-1 mb-6 text-sm text-ink/70">A few lines is plenty. I read everything.</p>
+              <ContactForm email={links.email} />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-cream/20 pt-6 text-sm text-cream/60">
+          <p>© {new Date().getFullYear()} Stefan Perovski</p>
+          <p>
+            Made in Skopje, probably with coffee. UI bits from{" "}
+            <a href="https://uiverse.io" target="_blank" rel="noopener noreferrer" className="link-underline text-cream/80">
+              Uiverse.io
+            </a>
+            .
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function Arrow() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden className="shrink-0">
+      <path d="M3 8h10m0 0L9 4m4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function HandWave() {
+  return (
+    <svg viewBox="0 0 24 24" className="wave inline-block size-[0.85em] translate-y-[0.02em] fill-cinnamon" aria-hidden>
+      <path d="m4.5 23c-1.687-.216-2.948-1.448-3.437-3.067-.239-.793.209-1.63 1.002-1.87.792-.24 1.629.209 1.87 1.002.166.55.452.838.985.994.795.233 1.251 1.066 1.018 1.861-.191.654-.79 1.079-1.439 1.079zm14.449-18.887c-.395-1.479-1.494-2.589-3.016-3.049-.792-.238-1.631.209-1.869 1.002-.24.793.209 1.63 1.002 1.87.656.198.897.626.984.951.18.671.785 1.113 1.448 1.113.968.012 1.715-.953 1.45-1.888zm1.801 3.528c-.353-.52-1.018-.772-1.648-.573-.609.191-1.035.716-1.082 1.37 0 0-.03.845-.016 1.985l-.004-.005v1.333c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-3c-.482-.479-.878-.92-1.607-1.648-1.93-1.93-2.99-3.582-3.004-3.599-.455-.557-1.276-.643-1.834-.189-.561.455-.646 1.271-.194 1.831-.072.067 2.121 2.872 3.957 4.572.254.254.254.666 0 .92l-.002.002c-.254.254-.666.254-.92 0-1.503-1.154-5.195-5.943-5.008-6.066-.404-.595-1.214-.753-1.81-.351-.599.403-.757 1.209-.356 1.807-.281.009 3.639 5.149 5.329 6.456.254.254.254.666 0 .92l-.002.002c-.254.254-.666.254-.92 0-1.468-1.299-4.838-5.305-4.67-5.218-.34-.634-1.129-.875-1.764-.537-.637.339-.878 1.124-.542 1.76-.211-.107 3.361 4.281 5.13 5.84.254.254.254.666 0 .92s-.666.254-.92 0c-1.162-1.123-3.238-3.331-3.036-3.182-.449-.563-1.27-.656-1.833-.208-.563.45-.657 1.269-.209 1.832-.228-.197 1.84 2.063 3.079 3.249 2.506 2.46 5.638 5.136 9.138 5.136 2.5 0 7.5-1.5 7.5-7.5s-1.249-7.859-1.249-7.859z" />
+    </svg>
+  );
+}
+
+function WaveMark() {
+  return (
+    <svg viewBox="0 0 48 48" className="size-10" fill="none" aria-hidden>
+      <path d="M4 18c5-5 10-5 15 0s10 5 15 0 10-5 10-5" stroke="var(--color-ink)" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M4 30c5-5 10-5 15 0s10 5 15 0 10-5 10-5" stroke="var(--color-cream)" strokeWidth="3.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const iconProps = {
+  width: 18,
+  height: 18,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": true,
+} as const;
+
+function MailIcon() {
+  return (
+    <svg {...iconProps}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg {...iconProps}>
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7" />
+    </svg>
+  );
+}
+
+function GitHubIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M9 19c-4 1.5-4-2-6-2.5m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
+    </svg>
+  );
+}
+
+function DocIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  );
+}
+
+function ArrowUpRight() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 14 15" fill="none" aria-hidden>
+      <path
+        d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg {...iconProps} width={16} height={16} className="dl-icon">
+      <path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" />
+    </svg>
+  );
+}
+
+function PinIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
   );
 }

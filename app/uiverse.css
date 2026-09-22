@@ -1,0 +1,336 @@
+/*
+ * Elements adapted from Uiverse.io (https://uiverse.io, github.com/uiverse-io/galaxy)
+ * and recoloured for this site's palette. Original authors credited per block.
+ *
+ * MIT License · Copyright (c) 2023 Uiverse.io
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following
+ * conditions: The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND.
+ */
+
+/* ---------- Send button · Uiverse.io by adamgiebl ---------- */
+.uv-send {
+  --w: 11rem;
+  width: var(--w);
+  font: inherit;
+  font-weight: 600;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  padding: 0.7em 1em 0.7em 1.1em;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.uv-send span {
+  display: block;
+  margin-left: 0.5em;
+  white-space: nowrap;
+  transition: transform 0.3s ease-in-out;
+}
+.uv-send svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+.uv-send:hover {
+  box-shadow: 4px 4px 0 0 var(--color-caramel);
+  transform: translate(-2px, -2px);
+}
+.uv-send:hover .svg-wrapper {
+  animation: uv-fly 0.6s ease-in-out infinite alternate;
+}
+.uv-send:hover svg {
+  /* slide the plane to the middle of the button */
+  transform: translateX(calc(var(--w) / 2 - 1.1em - 11px - 2px)) rotate(45deg) scale(1.15);
+}
+.uv-send:hover span {
+  transform: translateX(10em);
+}
+.uv-send:active {
+  transform: scale(0.96);
+}
+@keyframes uv-fly {
+  from { transform: translateY(0.1em); }
+  to { transform: translateY(-0.1em); }
+}
+
+/* ---------- Docs → download reveal · Uiverse.io by barisdogansutcu ---------- */
+.uv-cv {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.uv-cv .docs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 3rem;
+  padding: 0 1.2rem;
+  border-radius: 14px;
+  background: var(--color-card);
+  border: 2px solid var(--color-ink);
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.uv-cv .docs small {
+  font-weight: 500;
+  color: color-mix(in oklab, var(--color-ink) 60%, transparent);
+}
+.uv-cv .download {
+  position: absolute;
+  inset: 4px 0;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 88%;
+  margin: 0 auto;
+  font-size: 0.85rem;
+  border-radius: 0 0 12px 12px;
+  background: var(--color-caramel);
+  border: 2px solid var(--color-ink);
+  transform: translateY(0%);
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.uv-cv:hover .download,
+.uv-cv:focus-visible .download {
+  transform: translateY(88%);
+}
+.uv-cv:hover .docs {
+  box-shadow: 4px 4px 0 0 var(--color-ink);
+}
+.uv-cv .download svg polyline,
+.uv-cv .download svg line {
+  animation: uv-docs 1s infinite;
+}
+@keyframes uv-docs {
+  0%, 100% { transform: translateY(0%); }
+  50% { transform: translateY(-15%); }
+}
+
+/* ---------- Copy with tooltip · Uiverse.io by Galahhad ---------- */
+.uv-copy {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--color-caramel);
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.uv-copy svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.uv-copy .tooltip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-cream);
+  background: var(--color-ink);
+  padding: 6px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.uv-copy .tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+}
+.uv-copy:hover,
+.uv-copy[data-copied="true"] {
+  background: var(--color-cream);
+  transform: translateY(-1px);
+}
+.uv-copy:hover .tooltip,
+.uv-copy:focus-visible .tooltip,
+.uv-copy[data-copied="true"] .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: calc((100% + 8px) * -1);
+}
+
+/* ---------- Layered 3D icons · Uiverse.io by vikas7754 ---------- */
+.uv-layer {
+  position: relative;
+  display: block;
+  color: var(--color-cream);
+  text-decoration: none;
+}
+.uv-layer .layer {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 54px;
+  transition: transform 0.3s;
+}
+.uv-layer:hover .layer,
+.uv-layer:focus-visible .layer {
+  transform: rotate(-35deg) skew(20deg);
+}
+.uv-layer .layer span {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-caramel);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+.uv-layer .layer span:last-child {
+  display: grid;
+  place-items: center;
+  background: var(--color-caramel);
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+.uv-layer:hover .layer span:nth-child(1) { opacity: 0.2; }
+.uv-layer:hover .layer span:nth-child(2) { opacity: 0.4; transform: translate(5px, -5px); }
+.uv-layer:hover .layer span:nth-child(3) { opacity: 0.6; transform: translate(10px, -10px); }
+.uv-layer:hover .layer span:nth-child(4) { opacity: 0.8; transform: translate(15px, -15px); }
+.uv-layer:hover .layer span:nth-child(5) { opacity: 1; transform: translate(20px, -20px); }
+.uv-layer .label {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  opacity: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-caramel);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.uv-layer:hover .label,
+.uv-layer:focus-visible .label {
+  bottom: -34px;
+  opacity: 1;
+}
+
+/* ---------- Rotating circular badge · Uiverse.io by Creatlydev ---------- */
+.uv-spin {
+  /* positioned by the page (absolute), so no position here */
+  display: grid;
+  place-content: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-caramel);
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  box-shadow: 4px 4px 0 0 var(--color-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background 300ms, transform 200ms;
+}
+.uv-spin .ring {
+  position: absolute;
+  inset: 0;
+  animation: uv-rotate 10s linear infinite;
+}
+.uv-spin .ring > span {
+  position: absolute;
+  inset: 8px;
+  text-align: center;
+  transform: rotate(calc(var(--step) * var(--i)));
+}
+.uv-spin .core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+.uv-spin .core svg + svg {
+  position: absolute;
+  transform: translate(-150%, 150%);
+}
+.uv-spin:hover {
+  background: var(--color-cream);
+  transform: scale(1.06) rotate(-6deg);
+}
+.uv-spin:hover .core svg:first-child {
+  transition: transform 0.3s ease-in-out;
+  transform: translate(150%, -150%);
+}
+.uv-spin:hover .core svg + svg {
+  transition: transform 0.3s ease-in-out 0.1s;
+  transform: translate(0);
+}
+@keyframes uv-rotate {
+  to { rotate: 360deg; }
+}
+
+/* ---------- Patterns ---------- */
+
+/* Notebook paper · Uiverse.io by artvelog */
+.uv-notebook {
+  background-color: var(--color-card);
+  background-image:
+    linear-gradient(90deg, transparent 12px, color-mix(in oklab, var(--color-cinnamon) 45%, transparent) 12px,
+      color-mix(in oklab, var(--color-cinnamon) 45%, transparent) 14px, transparent 14px),
+    linear-gradient(color-mix(in oklab, var(--color-ink) 12%, transparent) 1px, transparent 1px);
+  background-size: 100% 30px;
+}
+
+/* Chevrons · Uiverse.io by alexruix */
+.uv-chevron {
+  --size: 64px;
+  --color: var(--color-ink);
+  --l: var(--color) 20%, #0000 0;
+  --bg: 35%, color-mix(in oklab, var(--color-ink) 72%, var(--color-caramel)) 0 45%, var(--color) 0;
+  background:
+    linear-gradient(45deg, var(--l) 45%, var(--color) 0 70%, #0000 0),
+    linear-gradient(-45deg, var(--l) var(--bg) 70%, #0000 0),
+    linear-gradient(45deg, var(--color) var(--bg));
+  background-size: var(--size) var(--size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uv-spin .ring,
+  .uv-send:hover .svg-wrapper,
+  .uv-cv .download svg polyline,
+  .uv-cv .download svg line {
+    animation: none;
+  }
+  .uv-send span,
+  .uv-send svg,
+  .uv-cv .docs,
+  .uv-cv .download,
+  .uv-layer .layer,
+  .uv-layer .layer span {
+    transition: none;
+  }
+}

@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
+import { Hanken_Grotesk, Young_Serif } from "next/font/google";
 import "./globals.css";
+
+const youngSerif = Young_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-young-serif",
+});
+
+const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-hanken",
+});
 
 export const metadata: Metadata = {
   title: "Stefan Perovski",
-  description: "Software Engineering Student & Developer",
+  description:
+    "Software engineering student at FINKI in Skopje, building apps for students, cafés and clinics.",
 };
 
 export default function RootLayout({
@@ -12,11 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-      </head>
-      <body>{children}</body>
+    <html lang="en" className={`${youngSerif.variable} ${hanken.variable}`}>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }
